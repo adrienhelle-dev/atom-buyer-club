@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Atom Buyer Club
 
-## Getting Started
+Site web de Atom Buyer Club — club privé d'investisseurs dans le micro-logement parisien.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack)
+- **TypeScript**
+- **Tailwind CSS v4**
+- **Framer Motion** (animations)
+- **Google Fonts** — Cormorant Garamond + DM Sans (via `next/font/google`)
+
+## Démarrage local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvre [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build de production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Déploiement sur Vercel (recommandé)
 
-To learn more about Next.js, take a look at the following resources:
+1. Pousser sur GitHub :
+   ```bash
+   git remote add origin https://github.com/VOTRE_ORG/atom-buyer-club.git
+   git push -u origin main
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Sur [vercel.com](https://vercel.com) : **New Project** → importer le repo → Deploy.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Aucune variable d'environnement requise pour le site statique.
 
-## Deploy on Vercel
+## Structure du projet
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+app/
+  layout.tsx                        # Root layout, fonts, metadata
+  page.tsx                          # Page d'accueil (assemble les sections)
+  globals.css                       # Tailwind + CSS custom properties
+  mentions-legales/page.tsx
+  politique-de-confidentialite/page.tsx
+  cgu/page.tsx
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+components/
+  Navbar.tsx                        # Navigation fixe, transparente au scroll
+  Hero.tsx                          # Section plein écran + compteur animé
+  Services.tsx                      # 3 colonnes : Sourcing, Travaux, Gestion
+  Process.tsx                       # Timeline 6 étapes
+  FinancialExample.tsx              # Tableau de coûts + métriques clés
+  Portfolio.tsx                     # Cartes projets (Assomption, Saint-Antoine)
+  Testimonials.tsx                  # 4 témoignages clients
+  FAQ.tsx                           # Accordion 9 questions
+  JoinClub.tsx                      # CTA WhatsApp + contacts équipe
+  Footer.tsx                        # Mentions légales complètes
+  Logo.tsx                          # SVG logo inline (dark/light)
+
+public/assets/
+  logo-atom-buyer-club.svg          # Logo dark
+  logo-atom-buyer-club-light.svg    # Logo light (fond sombre)
+```
+
+## A personnaliser avant mise en ligne
+
+- **Lien WhatsApp** : remplacer `https://chat.whatsapp.com/PLACEHOLDER` par le vrai lien
+- **Logo Microsurfaces** : ajouter `/public/assets/logo-microsurfaces.jpeg`
+- **Photos des projets** : remplacer les placeholders dans `Portfolio.tsx` par de vraies images
+- **Domaine** : configurer dans Vercel Settings
+
+## Entite legale
+
+Atom Buyer Club est une marque commerciale de **Microsurfaces SAS**
+RCS Paris 937 663 052 — N CPI 7501 2025 000 000 458
