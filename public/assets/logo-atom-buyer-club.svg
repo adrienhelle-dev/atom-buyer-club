@@ -1,0 +1,21 @@
+<svg viewBox="0 0 200 70" width="200" height="70" xmlns="http://www.w3.org/2000/svg">
+  <text
+    x="0"
+    y="44"
+    font-family="'Cormorant Garamond', Georgia, serif"
+    font-size="42"
+    font-weight="300"
+    letter-spacing="2"
+    fill="#1A1A1A"
+  >atom</text>
+  <text
+    x="2"
+    y="63"
+    font-family="'DM Sans', Arial, sans-serif"
+    font-size="11"
+    font-weight="400"
+    letter-spacing="4"
+    fill="rgba(26,26,26,0.55)"
+    text-anchor="start"
+  >BUYER CLUB</text>
+</svg>
