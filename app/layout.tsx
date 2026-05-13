@@ -24,10 +24,12 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const memberCount = process.env.NEXT_PUBLIC_MEMBER_COUNT ?? "713";
+const siteDescription = `Club privé · ${memberCount}+ investisseurs · Micro-logements parisiens clé-en-main — sourcing, rénovation premium et loyer garanti en bail société.`;
+
 export const metadata: Metadata = {
   title: "Atom Buyer Club — Investissement micro-logement parisien",
-  description:
-    "Club privé · 713 investisseurs · Micro-logements parisiens clé-en-main — sourcing, rénovation premium et loyer garanti en bail société. Projet autofinancé dès 147 000 €.",
+  description: siteDescription,
   keywords: [
     "investissement immobilier Paris",
     "micro-logement",
@@ -38,8 +40,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Atom Buyer Club — Micro-logement parisien clé-en-main",
-    description:
-      "Club privé · 713 investisseurs · Micro-logements parisiens clé-en-main — sourcing, rénovation premium et loyer garanti en bail société. Projet autofinancé dès 147 000 €.",
+    description: siteDescription,
     type: "website",
     url: "https://atombuyerclub.fr",
     locale: "fr_FR",
@@ -48,8 +49,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Atom Buyer Club — Micro-logement parisien clé-en-main",
-    description:
-      "Club privé · 713 investisseurs · Micro-logements parisiens clé-en-main — sourcing, rénovation premium et loyer garanti en bail société.",
+    description: siteDescription,
   },
 };
 

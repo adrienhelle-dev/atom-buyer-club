@@ -1,4 +1,5 @@
 "use client";
+import { MEMBER_COUNT } from "@/lib/config";
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -29,7 +30,7 @@ export default function Hero() {
     return () => clearTimeout(timer);
   }, []);
 
-  const memberCount = useCountUp(713, 2200, countStarted);
+  const memberCount = useCountUp(parseInt(MEMBER_COUNT), 2200, countStarted);
 
   const container = {
     hidden: { opacity: 0 },

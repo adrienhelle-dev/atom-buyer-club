@@ -1,4 +1,5 @@
 "use client";
+import { MEMBER_COUNT } from "@/lib/config";
 
 import { motion } from "framer-motion";
 
@@ -85,7 +86,7 @@ export default function JoinClub() {
               lineHeight: 1.1,
             }}
           >
-            713 investisseurs ont déjà rejoint Atom.
+            {MEMBER_COUNT} investisseurs ont déjà rejoint Atom.
           </h2>
 
           {/* Subtitle */}

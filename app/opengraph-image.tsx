@@ -1,3 +1,4 @@
+import { MEMBER_COUNT } from "@/lib/config";
 import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
@@ -98,7 +99,7 @@ export default function OGImage() {
               lineHeight: 1,
             }}
           >
-            713
+            {MEMBER_COUNT}
           </span>
           <span
             style={{
