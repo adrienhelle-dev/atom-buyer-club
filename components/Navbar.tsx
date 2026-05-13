@@ -48,9 +48,9 @@ export default function Navbar() {
           height: "72px",
         }}
       >
-        {/* Logo */}
+        {/* Logo — light version over dark hero, dark version once navbar turns cream */}
         <Link href="/" style={{ textDecoration: "none" }}>
-          <Logo variant="dark" />
+          <Logo variant={scrolled ? "dark" : "light"} />
         </Link>
 
         {/* Desktop nav */}
@@ -69,13 +69,13 @@ export default function Navbar() {
                 href={link.href}
                 style={{
                   textDecoration: "none",
-                  color: "#1A1A1A",
+                  color: scrolled ? "#1A1A1A" : "#F5F2ED",
                   fontSize: "14px",
                   fontWeight: "400",
                   letterSpacing: "0.02em",
                   opacity: 0.75,
-                  transition: "opacity 0.2s",
-                  fontFamily: "'DM Sans', sans-serif",
+                  transition: "color 0.3s, opacity 0.2s",
+                  fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.75")}
@@ -95,9 +95,9 @@ export default function Navbar() {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#1A1A1A",
+              color: scrolled ? "#1A1A1A" : "#F5F2ED",
               opacity: 0.55,
-              transition: "opacity 0.2s",
+              transition: "color 0.3s, opacity 0.2s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.55")}
@@ -118,7 +118,8 @@ export default function Navbar() {
               alignItems: "center",
               gap: "8px",
               padding: "10px 24px",
-              background: "#1A1A1A",
+              background: scrolled ? "#1A1A1A" : "rgba(245,242,237,0.12)",
+              border: scrolled ? "none" : "1px solid rgba(245,242,237,0.3)",
               color: "#F5F2ED",
               borderRadius: "2px",
               textDecoration: "none",
@@ -126,14 +127,16 @@ export default function Navbar() {
               fontWeight: "500",
               letterSpacing: "0.06em",
               fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
-              transition: "background 0.2s",
+              transition: "background 0.3s, border 0.3s",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = "#5C6BC0")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "#1A1A1A")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#5C6BC0";
+              e.currentTarget.style.border = "1px solid transparent";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = scrolled ? "#1A1A1A" : "rgba(245,242,237,0.12)";
+              e.currentTarget.style.border = scrolled ? "none" : "1px solid rgba(245,242,237,0.3)";
+            }}
           >
             Rejoindre
           </a>
@@ -148,7 +151,8 @@ export default function Navbar() {
             border: "none",
             cursor: "pointer",
             padding: "8px",
-            color: "#1A1A1A",
+            color: scrolled ? "#1A1A1A" : "#F5F2ED",
+            transition: "color 0.3s",
           }}
           className="show-mobile"
           aria-label="Menu"

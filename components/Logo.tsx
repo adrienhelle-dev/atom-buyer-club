@@ -1,51 +1,54 @@
 interface LogoProps {
   variant?: "dark" | "light";
   className?: string;
-  size?: "sm" | "md" | "lg";
 }
 
-export default function Logo({ variant = "dark", className = "", size = "md" }: LogoProps) {
-  const color = variant === "light" ? "#F5F2ED" : "#1C1C1C";
-  const subColor = variant === "light" ? "rgba(245,242,237,0.55)" : "rgba(28,28,28,0.45)";
+// variant="dark"  → dark-colored logo, for light/cream backgrounds (navbar)
+// variant="light" → light-colored logo, for dark backgrounds (footer)
+export default function Logo({ variant = "dark", className = "" }: LogoProps) {
+  const src =
+    variant === "light"
+      ? "/assets/atom-logo-ondark.svg"   // cream fill, for dark bg
+      : "/assets/atom-logo-onlight.svg"; // dark fill, for light bg
 
-  const scales = { sm: 0.7, md: 1, lg: 1.4 };
-  const scale = scales[size];
-  const w = Math.round(180 * scale);
-  const h = Math.round(72 * scale);
+  const subColor =
+    variant === "light"
+      ? "rgba(245,242,237,0.5)"
+      : "rgba(28,28,28,0.4)";
 
   return (
-    <svg
-      viewBox="0 0 180 72"
-      width={w}
-      height={h}
-      xmlns="http://www.w3.org/2000/svg"
+    <div
       className={className}
-      aria-label="Atom Buyer Club"
+      style={{
+        display: "inline-flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "5px",
+      }}
     >
-      {/* "atom" — Playfair Display Black to match the real atom logo */}
-      <text
-        x="0"
-        y="48"
-        fontFamily="var(--font-playfair), 'Playfair Display', Georgia, serif"
-        fontSize="52"
-        fontWeight="900"
-        fill={color}
-        letterSpacing="-1"
+      {/* Official Atom SVG logo */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt="atom"
+        height={22}
+        style={{ display: "block", width: "auto" }}
+      />
+      {/* "buyer club" below */}
+      <span
+        style={{
+          fontFamily: "var(--font-dm-sans), 'DM Sans', Arial, sans-serif",
+          fontSize: "8.5px",
+          fontWeight: 400,
+          letterSpacing: "4px",
+          color: subColor,
+          textTransform: "uppercase",
+          paddingLeft: "1px",
+          lineHeight: 1,
+        }}
       >
-        atom
-      </text>
-      {/* "buyer club" — light sans, generous tracking */}
-      <text
-        x="2"
-        y="66"
-        fontFamily="var(--font-dm-sans), 'DM Sans', Arial, sans-serif"
-        fontSize="10"
-        fontWeight="400"
-        letterSpacing="5"
-        fill={subColor}
-      >
-        BUYER CLUB
-      </text>
-    </svg>
+        buyer club
+      </span>
+    </div>
   );
 }
