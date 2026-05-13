@@ -185,7 +185,7 @@ export default function Hero() {
             style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "72px" }}
           >
             <a
-              href="https://chat.whatsapp.com/PLACEHOLDER"
+              href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
               style={{

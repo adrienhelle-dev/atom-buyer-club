@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const costItems = [
   { label: "Prix d'acquisition (FAI)", value: "95 000 €", bold: false },
@@ -23,12 +22,9 @@ const feeIncludes = [
 ];
 
 export default function FinancialExample() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={ref}
       style={{
         padding: "120px 24px",
         background: "#F5F2ED",
@@ -38,7 +34,7 @@ export default function FinancialExample() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -81,7 +77,7 @@ export default function FinancialExample() {
           {/* Cost table */}
           <motion.div
             initial={{ opacity: 0, x: -24 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
             transition={{ duration: 0.7, delay: 0.1 }}
             style={{
               background: "#FFFFFF",
@@ -168,7 +164,7 @@ export default function FinancialExample() {
             {/* Key metrics */}
             <motion.div
               initial={{ opacity: 0, x: 24 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
+              whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.7, delay: 0.2 }}
               style={{
                 display: "grid",
@@ -314,7 +310,7 @@ export default function FinancialExample() {
             {/* Fee breakdown */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.7, delay: 0.35 }}
               style={{
                 background: "#FFFFFF",

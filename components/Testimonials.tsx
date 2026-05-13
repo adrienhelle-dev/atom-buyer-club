@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -55,12 +54,9 @@ function Stars({ count }: { count: number }) {
 }
 
 export default function Testimonials() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={ref}
       style={{
         padding: "120px 24px",
         background: "#1A1A1A",
@@ -71,7 +67,7 @@ export default function Testimonials() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -114,7 +110,7 @@ export default function Testimonials() {
             <motion.div
               key={t.name}
               initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               style={{
                 padding: "36px 32px",

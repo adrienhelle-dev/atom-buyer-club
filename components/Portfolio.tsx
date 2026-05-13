@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const projects = [
   {
@@ -82,12 +81,9 @@ function StatRow({ label, value, highlight }: StatRowProps) {
 }
 
 export default function Portfolio() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={ref}
       id="realisations"
       style={{
         padding: "120px 24px",
@@ -98,7 +94,7 @@ export default function Portfolio() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -141,7 +137,7 @@ export default function Portfolio() {
             <motion.div
               key={project.name}
               initial={{ opacity: 0, y: 32 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               style={{
                 borderRadius: "2px",
@@ -244,7 +240,7 @@ export default function Portfolio() {
           {/* Coming soon card */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
             transition={{ duration: 0.7, delay: 0.3 }}
             style={{
               borderRadius: "2px",

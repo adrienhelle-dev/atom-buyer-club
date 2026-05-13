@@ -85,8 +85,32 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Instagram icon */}
           <a
-            href="https://chat.whatsapp.com/PLACEHOLDER"
+            href="https://www.instagram.com/atom.living?igsh=MXh4aWtudno0NW43MA=="
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram @atom.living"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#1A1A1A",
+              opacity: 0.55,
+              transition: "opacity 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.55")}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+
+          <a
+            href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -101,7 +125,7 @@ export default function Navbar() {
               fontSize: "13px",
               fontWeight: "500",
               letterSpacing: "0.06em",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
               transition: "background 0.2s",
             }}
             onMouseEnter={(e) =>
@@ -174,7 +198,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="https://chat.whatsapp.com/PLACEHOLDER"
+            href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
             target="_blank"
             rel="noopener noreferrer"
             style={{

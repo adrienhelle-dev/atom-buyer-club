@@ -152,12 +152,9 @@ function FAQItem({ faq, index, delay }: { faq: (typeof faqs)[0]; index: number; 
 }
 
 export default function FAQ() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={ref}
       id="faq"
       style={{
         padding: "120px 24px",
@@ -176,7 +173,7 @@ export default function FAQ() {
           {/* Left header */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
             transition={{ duration: 0.7 }}
             style={{ position: "sticky", top: "120px" }}
           >
@@ -217,7 +214,7 @@ export default function FAQ() {
               Vous ne trouvez pas la réponse à votre question ?
             </p>
             <a
-              href="https://chat.whatsapp.com/PLACEHOLDER"
+              href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -246,7 +243,7 @@ export default function FAQ() {
                 key={i}
                 faq={faq}
                 index={i}
-                delay={inView ? i * 0.05 : 0}
+                delay={i * 0.05}
               />
             ))}
           </div>

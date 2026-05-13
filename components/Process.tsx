@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const steps = [
   {
@@ -37,12 +36,9 @@ const steps = [
 ];
 
 export default function Process() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={ref}
       id="processus"
       style={{
         padding: "120px 24px",
@@ -54,7 +50,7 @@ export default function Process() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -112,7 +108,7 @@ export default function Process() {
             <motion.div
               key={step.number}
               initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
               style={{
                 padding: "0 24px 48px",
@@ -177,7 +173,7 @@ export default function Process() {
         {/* Bottom note */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7, delay: 0.7 }}
           style={{
             marginTop: "40px",

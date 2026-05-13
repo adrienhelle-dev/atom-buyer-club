@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 
 const services = [
   {
@@ -60,12 +59,9 @@ const services = [
 ];
 
 export default function Services() {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section
-      ref={ref}
       id="services"
       style={{
         padding: "120px 24px",
@@ -76,7 +72,7 @@ export default function Services() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -120,7 +116,7 @@ export default function Services() {
             <motion.div
               key={service.number}
               initial={{ opacity: 0, y: 32 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
               transition={{ duration: 0.7, delay: i * 0.15 }}
               style={{
                 padding: "48px 40px",
