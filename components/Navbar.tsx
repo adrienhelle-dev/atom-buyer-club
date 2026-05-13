@@ -3,23 +3,27 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
-
-const navLinks = [
-  { label: "Notre offre", href: "#services" },
-  { label: "Processus", href: "#processus" },
-  { label: "Réalisations", href: "#realisations" },
-  { label: "FAQ", href: "#faq" },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, setLang, tr } = useLanguage();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const navLinks = [
+    { label: tr.nav.offer, href: "#services" },
+    { label: tr.nav.process, href: "#processus" },
+    { label: tr.nav.portfolio, href: "#realisations" },
+    { label: tr.nav.faq, href: "#faq" },
+  ];
+
+  const linkColor = scrolled ? "#1A1A1A" : "#F5F2ED";
 
   return (
     <nav
@@ -30,9 +34,7 @@ export default function Navbar() {
         right: 0,
         zIndex: 100,
         transition: "all 0.3s ease",
-        background: scrolled
-          ? "rgba(245, 242, 237, 0.95)"
-          : "transparent",
+        background: scrolled ? "rgba(245, 242, 237, 0.95)" : "transparent",
         backdropFilter: scrolled ? "blur(12px)" : "none",
         borderBottom: scrolled ? "1px solid #E8E3DB" : "1px solid transparent",
       }}
@@ -48,18 +50,13 @@ export default function Navbar() {
           height: "72px",
         }}
       >
-        {/* Logo — light version over dark hero, dark version once navbar turns cream */}
         <Link href="/" style={{ textDecoration: "none" }}>
           <Logo variant={scrolled ? "dark" : "light"} />
         </Link>
 
         {/* Desktop nav */}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "40px",
-          }}
+          style={{ display: "flex", alignItems: "center", gap: "40px" }}
           className="hidden-mobile"
         >
           <div style={{ display: "flex", gap: "32px" }}>
@@ -69,7 +66,7 @@ export default function Navbar() {
                 href={link.href}
                 style={{
                   textDecoration: "none",
-                  color: scrolled ? "#1A1A1A" : "#F5F2ED",
+                  color: linkColor,
                   fontSize: "14px",
                   fontWeight: "400",
                   letterSpacing: "0.02em",
@@ -85,6 +82,41 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Language toggle */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "2px",
+              border: `1px solid ${scrolled ? "rgba(26,26,26,0.15)" : "rgba(245,242,237,0.2)"}`,
+              borderRadius: "100px",
+              padding: "3px",
+            }}
+          >
+            {(["fr", "en"] as const).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                style={{
+                  padding: "4px 10px",
+                  borderRadius: "100px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  letterSpacing: "0.06em",
+                  fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
+                  fontWeight: lang === l ? 500 : 400,
+                  background: lang === l ? (scrolled ? "#1A1A1A" : "rgba(245,242,237,0.2)") : "transparent",
+                  color: lang === l ? (scrolled ? "#F5F2ED" : "#F5F2ED") : linkColor,
+                  transition: "all 0.2s",
+                  textTransform: "uppercase",
+                }}
+              >
+                {l}
+              </button>
+            ))}
+          </div>
+
           {/* Instagram icon */}
           <a
             href="https://www.instagram.com/atom.living?igsh=MXh4aWtudno0NW43MA=="
@@ -95,7 +127,7 @@ export default function Navbar() {
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              color: scrolled ? "#1A1A1A" : "#F5F2ED",
+              color: linkColor,
               opacity: 0.55,
               transition: "color 0.3s, opacity 0.2s",
             }}
@@ -138,39 +170,64 @@ export default function Navbar() {
               e.currentTarget.style.border = scrolled ? "none" : "1px solid rgba(245,242,237,0.3)";
             }}
           >
-            Rejoindre
+            {tr.nav.join}
           </a>
         </div>
 
         {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: "8px",
-            color: scrolled ? "#1A1A1A" : "#F5F2ED",
-            transition: "color 0.3s",
-          }}
-          className="show-mobile"
-          aria-label="Menu"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            {menuOpen ? (
-              <>
-                <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" strokeWidth="1.5" />
-              </>
-            ) : (
-              <>
-                <line x1="4" y1="8" x2="20" y2="8" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="4" y1="16" x2="20" y2="16" stroke="currentColor" strokeWidth="1.5" />
-              </>
-            )}
-          </svg>
-        </button>
+        <div style={{ display: "none" }} className="show-mobile">
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            {/* Mobile lang toggle */}
+            <div style={{ display: "flex", gap: "2px" }}>
+              {(["fr", "en"] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  style={{
+                    padding: "4px 8px",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "11px",
+                    letterSpacing: "0.06em",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: lang === l ? 600 : 400,
+                    background: "transparent",
+                    color: lang === l ? linkColor : `${linkColor}80`,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "8px",
+                color: linkColor,
+                transition: "color 0.3s",
+              }}
+              aria-label="Menu"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                {menuOpen ? (
+                  <>
+                    <line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" strokeWidth="1.5" />
+                    <line x1="20" y1="4" x2="4" y2="20" stroke="currentColor" strokeWidth="1.5" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="4" y1="8" x2="20" y2="8" stroke="currentColor" strokeWidth="1.5" />
+                    <line x1="4" y1="16" x2="20" y2="16" stroke="currentColor" strokeWidth="1.5" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -220,7 +277,7 @@ export default function Navbar() {
               marginTop: "8px",
             }}
           >
-            Rejoindre le club
+            {tr.nav.join}
           </a>
         </div>
       )}
@@ -231,7 +288,7 @@ export default function Navbar() {
             display: none !important;
           }
           .show-mobile {
-            display: block !important;
+            display: flex !important;
           }
         }
       `}</style>

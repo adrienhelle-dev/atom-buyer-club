@@ -1,3 +1,4 @@
+import ClientWrapper from "@/components/ClientWrapper";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -11,17 +12,19 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <main>
-      <Navbar />
-      <Hero />
-      <Services />
-      <Process />
-      <FinancialExample />
-      <Portfolio />
-      <Testimonials />
-      <FAQ />
-      <JoinClub />
-      <Footer />
-    </main>
+    <ClientWrapper>
+      <main>
+        <Navbar />
+        <Hero />
+        <Services />
+        <Process />
+        <FinancialExample />
+        <Portfolio />
+        <Testimonials />
+        <FAQ />
+        <JoinClub />
+        <Footer />
+      </main>
+    </ClientWrapper>
   );
 }

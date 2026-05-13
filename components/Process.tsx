@@ -1,41 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const steps = [
-  {
-    number: "01",
-    title: "Capacité d'emprunt",
-    description: "Validation banque ou courtier Atom",
-  },
-  {
-    number: "02",
-    title: "Sélection",
-    description: "Fiche projet WhatsApp + visite",
-  },
-  {
-    number: "03",
-    title: "Offre d'achat",
-    description: "Au nom de Microsurfaces avec substitution",
-  },
-  {
-    number: "04",
-    title: "Promesse",
-    description: "Notaire + devis affinés",
-  },
-  {
-    number: "05",
-    title: "Financement + acte",
-    description: "2-3 mois dossier banque",
-  },
-  {
-    number: "06",
-    title: "Travaux + location",
-    description: "3-4 mois chantier puis mise en location",
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Process() {
+  const { tr } = useLanguage();
+  const steps = tr.process.steps;
 
   return (
     <section
@@ -50,7 +20,8 @@ export default function Process() {
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7 }}
           style={{ marginBottom: "80px" }}
         >
@@ -64,7 +35,7 @@ export default function Process() {
               marginBottom: "16px",
             }}
           >
-            PROCESSUS
+            {tr.process.label}
           </span>
           <h2
             style={{
@@ -78,102 +49,76 @@ export default function Process() {
               lineHeight: 1.15,
             }}
           >
-            De la sélection à la mise en location
+            {tr.process.heading}
           </h2>
         </motion.div>
 
-        {/* Steps — responsive grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "0",
-            position: "relative",
-          }}
-        >
-          {/* Connecting line (desktop) */}
+        {/* Desktop: 6-column row with connector line */}
+        <div className="process-desktop">
           <div
             style={{
-              position: "absolute",
-              top: "28px",
-              left: "5%",
-              right: "5%",
-              height: "1px",
-              background: "rgba(245,242,237,0.1)",
-              zIndex: 0,
+              display: "grid",
+              gridTemplateColumns: "repeat(6, 1fr)",
+              gap: "0",
+              position: "relative",
             }}
-          />
-
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.number}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
+          >
+            {/* Connecting line */}
+            <div
               style={{
-                padding: "0 24px 48px",
-                position: "relative",
-                zIndex: 1,
+                position: "absolute",
+                top: "28px",
+                left: "5%",
+                right: "5%",
+                height: "1px",
+                background: "rgba(245,242,237,0.1)",
+                zIndex: 0,
               }}
-            >
-              {/* Node */}
-              <div
-                style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  border: `1px solid ${i < 2 ? "#5C6BC0" : "rgba(245,242,237,0.2)"}`,
-                  background: i < 2 ? "rgba(92,107,192,0.1)" : "#1A1A1A",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "24px",
-                  flexShrink: 0,
-                }}
+            />
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0, margin: "300px" }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                style={{ padding: "0 24px 48px", position: "relative", zIndex: 1 }}
               >
-                <span
-                  style={{
-                    fontFamily: "'Cormorant Garamond', serif",
-                    fontSize: "16px",
-                    fontWeight: 300,
-                    color: i < 2 ? "#5C6BC0" : "rgba(245,242,237,0.5)",
-                  }}
-                >
-                  {step.number}
-                </span>
-              </div>
+                <StepNode step={step} i={i} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
-              <h3
-                style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  color: "#F5F2ED",
-                  margin: "0 0 10px",
-                  letterSpacing: "-0.01em",
-                }}
+        {/* Mobile: 2-column grid, no connector line */}
+        <div className="process-mobile">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "0",
+            }}
+          >
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0, margin: "300px" }}
+                transition={{ duration: 0.6, delay: i * 0.08 }}
+                style={{ padding: "0 16px 40px", position: "relative" }}
               >
-                {step.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "13px",
-                  color: "rgba(245,242,237,0.5)",
-                  margin: 0,
-                  lineHeight: 1.6,
-                  fontFamily: "'DM Sans', sans-serif",
-                }}
-              >
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
+                <StepNode step={step} i={i} />
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Bottom note */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0, margin: "300px" }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0, margin: "300px" }}
           transition={{ duration: 0.7, delay: 0.7 }}
           style={{
             marginTop: "40px",
@@ -205,12 +150,76 @@ export default function Process() {
             }}
           >
             <strong style={{ color: "#F5F2ED", fontWeight: 500 }}>
-              Délai total : 6 à 7 mois.
+              {tr.process.noteBold}
             </strong>{" "}
-            Rétractation possible sans frais jusqu&apos;à 10 jours après compromis.
+            {tr.process.noteDetail}
           </p>
         </motion.div>
       </div>
+
+      <style jsx>{`
+        .process-desktop { display: block; }
+        .process-mobile { display: none; }
+        @media (max-width: 900px) {
+          .process-desktop { display: none; }
+          .process-mobile { display: block; }
+        }
+      `}</style>
     </section>
+  );
+}
+
+function StepNode({ step, i }: { step: { number: string; title: string; description: string }; i: number }) {
+  return (
+    <>
+      <div
+        style={{
+          width: "56px",
+          height: "56px",
+          borderRadius: "50%",
+          border: `1px solid ${i < 2 ? "#5C6BC0" : "rgba(245,242,237,0.2)"}`,
+          background: i < 2 ? "rgba(92,107,192,0.1)" : "#1A1A1A",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "24px",
+          flexShrink: 0,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: "16px",
+            fontWeight: 300,
+            color: i < 2 ? "#5C6BC0" : "rgba(245,242,237,0.5)",
+          }}
+        >
+          {step.number}
+        </span>
+      </div>
+      <h3
+        style={{
+          fontFamily: "'Cormorant Garamond', serif",
+          fontSize: "20px",
+          fontWeight: 400,
+          color: "#F5F2ED",
+          margin: "0 0 10px",
+          letterSpacing: "-0.01em",
+        }}
+      >
+        {step.title}
+      </h3>
+      <p
+        style={{
+          fontSize: "13px",
+          color: "rgba(245,242,237,0.5)",
+          margin: 0,
+          lineHeight: 1.6,
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
+        {step.description}
+      </p>
+    </>
   );
 }
