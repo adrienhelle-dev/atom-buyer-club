@@ -90,7 +90,7 @@
       border-radius: 18px;
       padding: 18px 22px 20px;
     }
-    .deck-row { display: none; }
+    .deck-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .labels { display: flex; align-items: center; gap: 14px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
     .labels .active-label { color: var(--ink); font-weight: 500; }
     .scrub-wrap { position: relative; height: 60px; display: flex; align-items: center; }
@@ -124,13 +124,7 @@
       background: var(--ink); border: 3px solid var(--bg-2);
       box-shadow: 0 4px 18px rgba(0,0,0,.6); cursor: grab;
     }
-    .scrub-readout {
-      position: absolute; top: -30px; transform: translateX(-50%);
-      font-family: 'Fraunces', serif; font-size: 15px;
-      color: var(--ink); pointer-events: none;
-      transition: left .05s linear; white-space: nowrap;
-    }
-    .scrub-readout span { display: none; }
+    .scrub-readout { display: none; }
     .deck-tools {
       display: flex; align-items: center; justify-content: space-between;
       margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); gap: 12px;
@@ -442,11 +436,7 @@
     <!-- Deck: shared desktop+mobile -->
     <div class="deck" id="deck">
       <div class="deck-row">
-        <div class="labels">
-          <span id="lbl-before" class="active-label">Before · 2024</span>
-          <span style="opacity:.3">—</span>
-          <span id="lbl-after">After · 2025</span>
-        </div>
+        <div id="state-lbl" style="font-family:'Fraunces',serif; font-size:16px; letter-spacing:-0.01em; color:var(--ink);"></div>
         <div id="pct" style="font-family:'Fraunces',serif; font-size:14px; color:var(--ink-dim);">0<span style="opacity:.5">%</span></div>
       </div>
       <div class="scrub-wrap">
@@ -1742,19 +1732,21 @@ const lblBefore = document.getElementById('lbl-before');
 const lblAfter = document.getElementById('lbl-after');
 const progress = document.querySelector('.scrub-progress');
 
+const stateLbl = document.getElementById('state-lbl');
 function updateDeckUi() {
   const v = morph;
   const percent = Math.round(v * 100);
-  pct.innerHTML = `${percent}<span style="opacity:.5">%</span>`;
-  readout.style.left = Math.max(5, Math.min(90, v * 100)) + '%';
+  if (pct) pct.innerHTML = `${percent}<span style="opacity:.5">%</span>`;
   const _ro = (window.__T && window.__T.readout) ? window.__T.readout : ['Before|2024','Demolition|stripped back','Finishing|fit-out','After|2025'];
-  function _roHTML(s){ const p=s.split('|'); return p[0]+'<span>'+p[1]+'</span>'; }
-  if (v < 0.12) { readout.innerHTML = _roHTML(_ro[0]); }
-  else if (v < 0.5) { readout.innerHTML = _roHTML(_ro[1]); }
-  else if (v < 0.85) { readout.innerHTML = _roHTML(_ro[2]); }
-  else { readout.innerHTML = _roHTML(_ro[3]); }
-  lblBefore.classList.toggle('active-label', v < 0.5);
-  lblAfter.classList.toggle('active-label', v >= 0.5);
+  function _stateName(s){ return s.split('|')[0]; }
+  if (stateLbl) {
+    if (v < 0.12) stateLbl.textContent = _stateName(_ro[0]);
+    else if (v < 0.5) stateLbl.textContent = _stateName(_ro[1]);
+    else if (v < 0.85) stateLbl.textContent = _stateName(_ro[2]);
+    else stateLbl.textContent = _stateName(_ro[3]);
+  }
+  if (lblBefore) lblBefore.classList.toggle('active-label', v < 0.5);
+  if (lblAfter) lblAfter.classList.toggle('active-label', v >= 0.5);
 }
 
 scrub.addEventListener('input', (e) => {
