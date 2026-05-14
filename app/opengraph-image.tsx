@@ -8,9 +8,13 @@ export default async function OGImage() {
   // Fetch Cormorant Garamond Light (300) for the "atom" wordmark
   let cormorantFont: ArrayBuffer | null = null;
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
     cormorantFont = await fetch(
-      "https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjornFLsS6V7w.woff2"
+      "https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjornFLsS6V7w.woff2",
+      { signal: controller.signal }
     ).then((r) => r.arrayBuffer());
+    clearTimeout(timeout);
   } catch {
     cormorantFont = null;
   }
