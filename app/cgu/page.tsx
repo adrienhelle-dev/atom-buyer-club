@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "CGU — Atom Buyer Club",
-  description: "Conditions générales d'utilisation du site Atom Buyer Club",
+  title: "CGU — Atom Buyers Club",
+  description: "Conditions générales d'utilisation du site Atom Buyers Club",
 };
 
 export default function CGU() {

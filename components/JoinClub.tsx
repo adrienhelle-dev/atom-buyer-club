@@ -1,8 +1,10 @@
 "use client";
 import { MEMBER_COUNT } from "@/lib/config";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+import BookingModal from "./BookingModal";
 
 const contacts = [
   {
@@ -25,6 +27,7 @@ const contacts = [
 export default function JoinClub() {
   const { tr } = useLanguage();
   const j = tr.join;
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   return (
     <section style={{ padding: "160px 24px", background: "#1A1A1A", textAlign: "center", position: "relative", overflow: "hidden" }}>
@@ -88,11 +91,25 @@ export default function JoinClub() {
                 >
                   {contact.email}
                 </a>
+                <button
+                  onClick={() => setBookingOpen(true)}
+                  style={{ marginTop: "10px", display: "inline-flex", alignItems: "center", gap: "6px", padding: "7px 16px", background: "transparent", color: "rgba(245,242,237,0.6)", border: "1px solid rgba(245,242,237,0.2)", borderRadius: "2px", cursor: "pointer", fontSize: "11px", fontWeight: 500, letterSpacing: "0.06em", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.5)"; e.currentTarget.style.color = "#F5F2ED"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.2)"; e.currentTarget.style.color = "rgba(245,242,237,0.6)"; }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                    <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                    <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  {j.bookSlot}
+                </button>
               </div>
             ))}
           </div>
         </motion.div>
       </div>
+
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
     </section>
   );
 }

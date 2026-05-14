@@ -99,7 +99,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="mailto:adrien.helle@atom-capital.fr"
+                href="mailto:contact@atom-capital.fr"
                 aria-label="Email"
                 style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: "36px", height: "36px", border: "1px solid rgba(245,242,237,0.15)", borderRadius: "50%", color: "rgba(245,242,237,0.5)", transition: "all 0.2s" }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.5)"; e.currentTarget.style.color = "#F5F2ED"; }}
@@ -119,7 +119,7 @@ export default function Footer() {
               {f.legalTitle}
             </div>
             <div style={{ fontSize: "12px", color: "rgba(245,242,237,0.4)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.9 }}>
-              <p style={{ margin: "0 0 4px" }}>Atom Buyer Club est une marque commerciale de :</p>
+              <p style={{ margin: "0 0 4px" }}>Atom Buyers Club est une marque commerciale de :</p>
               <p style={{ margin: "0 0 4px", color: "rgba(245,242,237,0.6)", fontWeight: 500 }}>SAS MICROSURFACES</p>
               <p style={{ margin: "0 0 4px" }}>RCS Paris 937 663 052 — Capital social : 1 000 €</p>
               <p style={{ margin: "0 0 4px" }}>Siège social : 97 rue de Turenne, 75003 Paris</p>

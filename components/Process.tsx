@@ -53,25 +53,25 @@ export default function Process() {
           </h2>
         </motion.div>
 
-        {/* Desktop: 6-column row with connector line */}
+        {/* Desktop: 8-column row with connector line */}
         <div className="process-desktop">
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(6, 1fr)",
+              gridTemplateColumns: "repeat(8, 1fr)",
               gap: "0",
               position: "relative",
             }}
           >
-            {/* Connecting line */}
+            {/* Connecting line — starts/ends at center of first/last circle */}
             <div
               style={{
                 position: "absolute",
                 top: "28px",
-                left: "5%",
-                right: "5%",
+                left: "6.25%",
+                right: "6.25%",
                 height: "1px",
-                background: "rgba(245,242,237,0.1)",
+                background: "rgba(245,242,237,0.12)",
                 zIndex: 0,
               }}
             />
@@ -81,8 +81,8 @@ export default function Process() {
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0, margin: "300px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                style={{ padding: "0 24px 48px", position: "relative", zIndex: 1 }}
+                transition={{ duration: 0.6, delay: i * 0.08 }}
+                style={{ padding: "0 16px 40px", position: "relative", zIndex: 1 }}
               >
                 <StepNode step={step} i={i} />
               </motion.div>
@@ -178,7 +178,7 @@ function StepNode({ step, i }: { step: { number: string; title: string; descript
           height: "56px",
           borderRadius: "50%",
           border: `1px solid ${i < 2 ? "#5C6BC0" : "rgba(245,242,237,0.2)"}`,
-          background: i < 2 ? "rgba(92,107,192,0.1)" : "#1A1A1A",
+          background: i < 2 ? "#1e2140" : "#1A1A1A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",

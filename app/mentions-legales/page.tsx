@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mentions légales — Atom Buyer Club",
-  description: "Mentions légales de Atom Buyer Club / Microsurfaces SAS",
+  title: "Mentions légales — Atom Buyers Club",
+  description: "Mentions légales de Atom Buyers Club / Microsurfaces SAS",
 };
 
 export default function MentionsLegales() {
@@ -69,7 +69,7 @@ export default function MentionsLegales() {
 
           <Section title="Activité réglementée">
             <p>
-              Atom Buyer Club est une marque commerciale de Microsurfaces SAS,
+              Atom Buyers Club est une marque commerciale de Microsurfaces SAS,
               titulaire de la carte professionnelle « Transactions sur immeubles
               et fonds de commerce » :
               <br />

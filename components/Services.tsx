@@ -37,7 +37,7 @@ export default function Services() {
           style={{ marginBottom: "80px" }}
         >
           <span style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", display: "block", marginBottom: "16px" }}>{s.label}</span>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 300, color: "#1A1A1A", margin: 0, letterSpacing: "-0.02em", maxWidth: "560px", lineHeight: 1.15 }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 300, color: "#1A1A1A", margin: 0, letterSpacing: "-0.02em", maxWidth: "none", lineHeight: 1.15, whiteSpace: "nowrap" }}>
             {s.heading}
           </h2>
         </motion.div>

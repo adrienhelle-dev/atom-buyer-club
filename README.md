@@ -1,6 +1,6 @@
-# Atom Buyer Club
+# Atom Buyers Club
 
-Site web de Atom Buyer Club — club privé d'investisseurs dans le micro-logement parisien.
+Site web de Atom Buyers Club — club privé d'investisseurs dans le micro-logement parisien.
 
 ## Stack
 
@@ -76,5 +76,5 @@ public/assets/
 
 ## Entite legale
 
-Atom Buyer Club est une marque commerciale de **Microsurfaces SAS**
+Atom Buyers Club est une marque commerciale de **Microsurfaces SAS**
 RCS Paris 937 663 052 — N CPI 7501 2025 000 000 458

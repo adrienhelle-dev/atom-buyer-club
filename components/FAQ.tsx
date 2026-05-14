@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+import BookingModal from "./BookingModal";
 
 function FAQItem({ question, answer, index, delay }: { question: string; answer: string; index: number; delay: number }) {
   const [open, setOpen] = useState(false);
@@ -55,17 +56,27 @@ function FAQItem({ question, answer, index, delay }: { question: string; answer:
 export default function FAQ() {
   const { tr } = useLanguage();
   const f = tr.faq;
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   return (
     <section id="faq" style={{ padding: "120px 24px", background: "#F5F2ED" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "80px", alignItems: "start" }}>
+        {/* Mobile header — shown only on small screens */}
+        <div className="faq-mobile-header">
+          <span style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", display: "block", marginBottom: "16px" }}>{f.label}</span>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 8vw, 48px)", fontWeight: 300, color: "#1A1A1A", margin: "0 0 40px", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+            {f.heading}
+          </h2>
+        </div>
+
+        <div className="faq-grid">
+          {/* Sidebar — hidden on mobile */}
+          <div className="faq-sidebar">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0, margin: "300px" }}
             transition={{ duration: 0.7 }}
-            style={{ position: "sticky", top: "120px" }}
           >
             <span style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", display: "block", marginBottom: "16px" }}>{f.label}</span>
             <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 48px)", fontWeight: 300, color: "#1A1A1A", margin: "0 0 24px", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
@@ -74,33 +85,57 @@ export default function FAQ() {
             <p style={{ fontSize: "14px", color: "rgba(26,26,26,0.55)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, margin: "0 0 32px" }}>
               {f.notFound}
             </p>
-            <a
-              href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px", background: "#1A1A1A", color: "#F5F2ED", borderRadius: "2px", textDecoration: "none", fontSize: "13px", fontWeight: 500, letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif" }}
+            <button
+              onClick={() => setBookingOpen(true)}
+              style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px", background: "#1A1A1A", color: "#F5F2ED", borderRadius: "2px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 500, letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif" }}
             >
               {f.contact}
-            </a>
+            </button>
           </motion.div>
+          </div>
 
+          {/* Accordion */}
           <div>
             {f.items.map((item, i) => (
               <FAQItem key={i} question={item.question} answer={item.answer} index={i} delay={i * 0.05} />
             ))}
+
+            {/* Mobile-only contact CTA below accordion */}
+            <div className="faq-mobile-cta">
+              <p style={{ fontSize: "14px", color: "rgba(26,26,26,0.55)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7, margin: "0 0 16px" }}>
+                {f.notFound}
+              </p>
+              <button
+                onClick={() => setBookingOpen(true)}
+                style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "12px 24px", background: "#1A1A1A", color: "#F5F2ED", borderRadius: "2px", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 500, letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif" }}
+              >
+                {f.contact}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} />
+
       <style jsx>{`
+        .faq-mobile-header { display: none; }
+        .faq-mobile-cta { display: none; }
+        .faq-grid {
+          display: grid;
+          grid-template-columns: 1fr 2fr;
+          gap: 80px;
+          align-items: start;
+        }
+        .faq-sidebar {
+          position: sticky;
+          top: 120px;
+        }
         @media (max-width: 768px) {
-          div[style*="grid-template-columns: 1fr 2fr"] {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-          div[style*="position: sticky"] {
-            position: static !important;
-          }
+          .faq-mobile-header { display: block; }
+          .faq-mobile-cta { display: block; padding-top: 40px; border-top: 1px solid #E8E3DB; margin-top: 8px; }
+          .faq-grid { grid-template-columns: 1fr; gap: 0; }
+          .faq-sidebar { display: none; }
         }
       `}</style>
     </section>

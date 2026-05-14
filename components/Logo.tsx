@@ -34,7 +34,7 @@ export default function Logo({ variant = "dark", className = "" }: LogoProps) {
         height={22}
         style={{ display: "block", width: "auto" }}
       />
-      {/* "buyer club" below */}
+      {/* "buyers club" below */}
       <span
         style={{
           fontFamily: "var(--font-dm-sans), 'DM Sans', Arial, sans-serif",
@@ -47,7 +47,7 @@ export default function Logo({ variant = "dark", className = "" }: LogoProps) {
           lineHeight: 1,
         }}
       >
-        buyer club
+        buyers club
       </span>
     </div>
   );

@@ -1,0 +1,1870 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Atom Living · Studio 3D</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0f0e0c;
+      --bg-2: #1a1814;
+      --ink: #f5f1ea;
+      --ink-dim: rgba(245,241,234,.65);
+      --ink-faint: rgba(245,241,234,.35);
+      --line: rgba(245,241,234,.14);
+      --line-strong: rgba(245,241,234,.25);
+      --accent: #e8dcc4;
+      --before: #9fa9b8;
+      --after: #d7b894;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%; width: 100%;
+      background: var(--bg); color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── DESKTOP LAYOUT ─────────────────────────────────────── */
+    #app { position: fixed; inset: 0; }
+    #canvas-wrap { position: absolute; inset: 0; }
+    canvas { display: block; touch-action: none; }
+
+    .mobile-header { display: none; }
+
+    /* Top bar */
+    .topbar {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; pointer-events: auto; }
+    .brand-word { font-family: 'Fraunces', serif; font-weight: 500; font-size: 19px; letter-spacing: .01em; }
+    .brand-word em { font-style: italic; font-weight: 400; color: var(--ink-dim); }
+    .brand-sub { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint); margin-top: 2px; }
+    .meta {
+      text-align: right; pointer-events: auto;
+      font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint);
+      line-height: 1.6;
+    }
+    .meta strong { color: var(--ink-dim); font-weight: 500; }
+
+    /* Left caption */
+    .caption {
+      position: absolute; left: 28px; bottom: 180px; z-index: 10;
+      max-width: 340px; pointer-events: none;
+    }
+    .caption .eyebrow {
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-faint);
+      margin-bottom: 14px;
+    }
+    .caption h1 {
+      font-family: 'Fraunces', serif; font-weight: 400;
+      font-size: 38px; line-height: 1.04; margin: 0 0 14px;
+      letter-spacing: -0.01em;
+    }
+    .caption h1 em { font-style: italic; color: var(--after); font-weight: 300; }
+    .caption p { margin: 0; font-size: 13px; line-height: 1.55; color: var(--ink-dim); max-width: 300px; }
+    .caption .stats {
+      margin-top: 22px; display: flex; gap: 28px;
+      border-top: 1px solid var(--line); padding-top: 18px;
+    }
+    .caption .stat .n { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 400; line-height: 1; }
+    .caption .stat .l { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-faint); margin-top: 6px; }
+
+    /* Bottom control deck */
+    .deck {
+      position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%);
+      width: min(720px, calc(100% - 56px));
+      z-index: 20;
+      background: rgba(20,18,15,.72);
+      backdrop-filter: blur(18px) saturate(1.1);
+      -webkit-backdrop-filter: blur(18px) saturate(1.1);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 22px 20px;
+    }
+    .deck-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .labels { display: flex; align-items: center; gap: 14px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
+    .labels .active-label { color: var(--ink); font-weight: 500; }
+    .scrub-wrap { position: relative; height: 44px; display: flex; align-items: center; }
+    .scrub-track {
+      position: relative; width: 100%; height: 6px;
+      background: linear-gradient(90deg, #3a4755 0%, #3a4755 50%, #8c6c47 50%, #8c6c47 100%);
+      border-radius: 6px; overflow: hidden;
+    }
+    .scrub-progress {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: linear-gradient(90deg, var(--before), var(--after));
+      opacity: 0; transition: opacity .2s;
+    }
+    .scrub-ticks { position: absolute; inset: 0; display: flex; align-items: center; }
+    .scrub-tick { flex: 1; border-right: 1px solid rgba(255,255,255,.1); height: 3px; }
+    .scrub-tick:last-child { border-right: 0; }
+    .scrub-range {
+      position: absolute; inset: -14px 0; width: 100%;
+      -webkit-appearance: none; appearance: none;
+      background: transparent; outline: none; margin: 0; cursor: grab;
+    }
+    .scrub-range:active { cursor: grabbing; }
+    .scrub-range::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--ink); border: 3px solid var(--bg-2);
+      box-shadow: 0 4px 14px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.2); cursor: grab;
+    }
+    .scrub-range::-moz-range-thumb {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--ink); border: 3px solid var(--bg-2);
+      box-shadow: 0 4px 14px rgba(0,0,0,.5); cursor: grab;
+    }
+    .scrub-readout {
+      position: absolute; top: -28px; transform: translateX(-50%);
+      font-family: 'Fraunces', serif; font-size: 15px;
+      color: var(--ink); pointer-events: none;
+      transition: left .05s linear; white-space: nowrap;
+    }
+    .scrub-readout span { color: var(--ink-faint); font-size: 11px; margin-left: 4px; }
+    .deck-tools {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); gap: 12px;
+    }
+    .segmented {
+      display: flex; background: rgba(0,0,0,.3); border: 1px solid var(--line);
+      border-radius: 999px; padding: 3px;
+    }
+    .segmented button {
+      background: none; border: 0; color: var(--ink-dim);
+      padding: 7px 14px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      border-radius: 999px; cursor: pointer; font-family: inherit; transition: all .18s;
+    }
+    .segmented button:hover { color: var(--ink); }
+    .segmented button.on { background: var(--ink); color: var(--bg); }
+    .btn-ghost {
+      background: none; border: 1px solid var(--line-strong);
+      color: var(--ink-dim); padding: 8px 14px;
+      font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+      border-radius: 999px; cursor: pointer; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 8px; transition: all .18s;
+    }
+    .btn-ghost:hover { color: var(--ink); border-color: var(--ink); }
+    .btn-ghost.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+    /* Right hotspot panel */
+    .info {
+      position: absolute; right: 28px; top: 90px; bottom: 190px; z-index: 10;
+      width: 300px; display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .info-card {
+      background: rgba(20,18,15,.72); backdrop-filter: blur(18px) saturate(1.1);
+      -webkit-backdrop-filter: blur(18px) saturate(1.1);
+      border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; pointer-events: auto;
+    }
+    .info-title {
+      font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint);
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
+    }
+    .info h3 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 18px; margin: 0 0 6px; }
+    .info p { font-size: 12px; line-height: 1.5; color: var(--ink-dim); margin: 0; }
+    .hotspot-list { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+    .hotspot-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--line); cursor: pointer;
+      font-size: 12px; color: var(--ink-dim); transition: color .15s;
+    }
+    .hotspot-item:last-child { border-bottom: 0; }
+    .hotspot-item:hover { color: var(--ink); }
+    .hotspot-item.active { color: var(--after); }
+    .hotspot-item .num { font-family: 'Fraunces', serif; font-size: 14px; width: 22px; color: var(--ink-faint); }
+    .hotspot-item.active .num { color: var(--after); }
+    .hotspot-item .nm { flex: 1; }
+    .hotspot-item .ar { font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-faint); }
+
+    /* 3D hotspots */
+    .hotspot {
+      position: absolute; z-index: 5; width: 28px; height: 28px; border-radius: 50%;
+      border: 1.5px solid var(--ink); background: rgba(20,18,15,.65); backdrop-filter: blur(6px);
+      display: grid; place-items: center; font-family: 'Fraunces', serif; font-size: 13px;
+      color: var(--ink); cursor: pointer; transform: translate(-50%, -50%);
+      transition: all .2s, transform .05s linear; pointer-events: auto;
+    }
+    .hotspot::after {
+      content: ''; position: absolute; inset: -6px; border: 1px solid var(--ink);
+      border-radius: 50%; opacity: 0; animation: pulse 2.4s ease-out infinite;
+    }
+    .hotspot:hover { background: var(--ink); color: var(--bg); transform: translate(-50%,-50%) scale(1.1); }
+    .hotspot.active { background: var(--after); color: var(--bg); border-color: var(--after); }
+    .hotspot.fade { opacity: .12; }
+    @keyframes pulse {
+      0% { transform: scale(.9); opacity: .6; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .hotspot-tooltip {
+      position: absolute; z-index: 6;
+      background: rgba(20,18,15,.92); backdrop-filter: blur(12px);
+      border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; width: 250px;
+      transform: translate(14px, -50%); pointer-events: none; opacity: 0; transition: opacity .18s;
+    }
+    .hotspot-tooltip.show { opacity: 1; }
+    .hotspot-tooltip h4 { font-family: 'Fraunces', serif; font-weight: 400; font-size: 15px; margin: 0 0 4px; }
+    .hotspot-tooltip .ba {
+      display: flex; gap: 8px; font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 8px;
+    }
+    .hotspot-tooltip .ba span.sep { opacity: .5; }
+    .hotspot-tooltip .before-txt { color: var(--before); }
+    .hotspot-tooltip .after-txt { color: var(--after); }
+    .hotspot-tooltip p { font-size: 12px; line-height: 1.45; color: var(--ink-dim); margin: 0; }
+
+    /* Hint */
+    .hint {
+      position: absolute; left: 50%; top: 90px; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 8px;
+      font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint);
+      z-index: 10; pointer-events: none;
+      opacity: 0; animation: hint 6s ease-in-out 1.2s forwards;
+    }
+    @keyframes hint { 0%{opacity:0} 20%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
+    .hint .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--ink-dim);
+      animation: blink 1.6s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    /* Loader */
+    .loader {
+      position: absolute; inset: 0; z-index: 100; display: grid; place-items: center;
+      background: var(--bg); transition: opacity .6s; pointer-events: none;
+    }
+    .loader.hide { opacity: 0; }
+    .loader .l-inner { text-align: center; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--ink-faint); }
+    .loader .l-bar { width: 120px; height: 1px; background: var(--line); margin: 16px auto 0; overflow: hidden; }
+    .loader .l-bar::after {
+      content: ''; display: block; height: 100%; width: 40%; background: var(--ink);
+      animation: slide 1.2s ease-in-out infinite;
+    }
+    @keyframes slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }
+
+    /* ── MOBILE LAYOUT ──────────────────────────────────────── */
+    @media (max-width: 768px) {
+      html, body { overflow: hidden; }
+
+      #app {
+        position: fixed; inset: 0;
+        display: flex; flex-direction: column;
+      }
+
+      /* Mobile header replaces desktop caption + topbar */
+      .mobile-header {
+        display: flex; flex-direction: column;
+        flex-shrink: 0;
+        background: var(--bg-2);
+        padding: 14px 18px 12px;
+        border-bottom: 1px solid var(--line);
+        z-index: 20;
+      }
+      .mobile-brand {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 10px;
+      }
+      .mobile-brand .brand-word { font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; }
+      .mobile-brand .brand-word em { font-style: italic; font-weight: 400; color: var(--ink-dim); }
+      .mobile-brand .brand-sub { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin-top: 1px; }
+      .mobile-eyebrow { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px; }
+      .mobile-title {
+        font-family: 'Fraunces', serif; font-weight: 400; font-size: 20px; line-height: 1.15;
+        letter-spacing: -.01em; margin-bottom: 10px;
+      }
+      .mobile-title em { font-style: italic; color: var(--after); font-weight: 300; }
+      .mobile-stats {
+        display: flex; gap: 20px;
+        border-top: 1px solid var(--line); padding-top: 10px;
+      }
+      .mobile-stats .stat { }
+      .mobile-stats .stat .n { font-family: 'Fraunces', serif; font-size: 18px; line-height: 1; }
+      .mobile-stats .stat .l { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin-top: 3px; }
+
+      /* Canvas takes all remaining space */
+      #canvas-wrap {
+        flex: 1 1 0;
+        min-height: 0;
+        position: relative;
+      }
+
+      /* Deck sticks below canvas */
+      .deck {
+        position: relative !important;
+        left: auto !important; bottom: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+        border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important;
+        padding: 14px 16px 16px !important;
+        flex-shrink: 0;
+      }
+      .deck-tools { flex-wrap: wrap; gap: 8px; }
+      #btn-reset { display: none; }
+      .segmented button { padding: 6px 10px; font-size: 10px; }
+      .btn-ghost { padding: 6px 12px; font-size: 10px; }
+
+      /* Hide desktop-only overlays */
+      .topbar, .caption, .info, .hint { display: none !important; }
+
+      /* Hide 3D hotspots on mobile (too small, touch-unfriendly) */
+      .hotspot { display: none !important; }
+    }
+
+    /* ── LANDSCAPE MOBILE ───────────────────────────────────── */
+    @media (max-width: 900px) and (orientation: landscape) {
+      html, body { overflow: hidden; }
+      #app {
+        position: fixed; inset: 0;
+        display: flex; flex-direction: column;
+      }
+      /* Hide mobile header in landscape — give canvas full space */
+      .mobile-header { display: none !important; }
+      /* Also hide desktop overlays that cause overlap */
+      .topbar { display: none !important; }
+      .caption { display: none !important; }
+      .hint { display: none !important; }
+      /* Compact info panel on right in landscape */
+      .info {
+        display: flex !important;
+        top: 8px; bottom: 80px; right: 8px; width: 200px;
+      }
+      .info-card { padding: 10px 12px; border-radius: 8px; }
+      .info h3 { font-size: 14px; }
+      .info p { font-size: 11px; }
+      .hotspot-item { font-size: 11px; padding: 6px 0; }
+      /* Canvas takes all space above deck */
+      #canvas-wrap {
+        flex: 1 1 0; min-height: 0; position: relative;
+      }
+      /* Deck compact at bottom */
+      .deck {
+        position: relative !important;
+        left: auto !important; bottom: auto !important;
+        transform: none !important;
+        width: 100% !important;
+        border-radius: 0 !important;
+        border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important;
+        padding: 10px 16px 12px !important;
+        flex-shrink: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+
+    <!-- Mobile header (hidden on desktop) -->
+    <div class="mobile-header">
+      <div class="mobile-brand">
+        <svg width="28" height="28" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="16" stroke="#f5f1ea" stroke-width="1.2"/>
+          <ellipse cx="17" cy="17" rx="14" ry="5" stroke="#f5f1ea" stroke-width="1" transform="rotate(30 17 17)"/>
+          <ellipse cx="17" cy="17" rx="14" ry="5" stroke="#f5f1ea" stroke-width="1" transform="rotate(-30 17 17)"/>
+          <circle cx="17" cy="17" r="1.8" fill="#f5f1ea"/>
+        </svg>
+        <div>
+          <div class="brand-word" id="mob-brand-word">Atom <em>Living</em></div>
+          <div class="brand-sub" id="mob-brand-sub">Studio · 20 rue Saint-Claude · 9m²</div>
+        </div>
+      </div>
+      <div class="mobile-eyebrow" id="mob-eyebrow">Refurbishment · 2025</div>
+      <h1 class="mobile-title" id="mob-title">From dark loft-bed cell to <em>compact sanctuary</em>.</h1>
+      <div class="mobile-stats">
+        <div class="stat"><div class="n">9m²</div><div class="l" id="mob-stat-fp">Footprint</div></div>
+        <div class="stat"><div class="n">16wk</div><div class="l" id="mob-stat-build">Build</div></div>
+        <div class="stat"><div class="n">07</div><div class="l" id="mob-stat-int">Interventions</div></div>
+      </div>
+    </div>
+
+    <!-- Canvas -->
+    <div id="canvas-wrap"></div>
+
+    <!-- Desktop: top bar -->
+    <div class="topbar">
+      <div class="brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+          <circle cx="17" cy="17" r="16" stroke="#f5f1ea" stroke-width="1.2"/>
+          <ellipse cx="17" cy="17" rx="14" ry="5" stroke="#f5f1ea" stroke-width="1" transform="rotate(30 17 17)"/>
+          <ellipse cx="17" cy="17" rx="14" ry="5" stroke="#f5f1ea" stroke-width="1" transform="rotate(-30 17 17)"/>
+          <circle cx="17" cy="17" r="1.8" fill="#f5f1ea"/>
+        </svg>
+        <div>
+          <div class="brand-word">Atom <em>Living</em></div>
+          <div class="brand-sub" id="brand-sub">Studio · 20 rue Saint-Claude · 9m²</div>
+        </div>
+      </div>
+      <div class="meta">
+        <div><strong id="meta-case">Case study 04</strong></div>
+        <div id="meta-sub">Before → After · interactive</div>
+      </div>
+    </div>
+
+    <!-- Desktop: hint -->
+    <div class="hint" id="hint-bar">
+      <span class="dot"></span>
+      <span id="hint-text">Drag slider · Orbit with mouse · Click numbers to inspect</span>
+    </div>
+
+    <!-- Desktop: caption -->
+    <div class="caption">
+      <div class="eyebrow" id="caption-eyebrow">Refurbishment · 2025</div>
+      <h1 id="caption-h1">From dark loft-bed cell to <em>compact sanctuary</em>.</h1>
+      <p id="caption-p">9 square meters at 20 rue Saint-Claude, Paris 75004. Drag the slider to scrub between the original state and the finished refurbishment. Rotate the model to inspect every intervention — built in 16 weeks.</p>
+      <div class="stats">
+        <div class="stat"><div class="n">9m²</div><div class="l" id="stat-fp">Footprint</div></div>
+        <div class="stat"><div class="n">16wk</div><div class="l" id="stat-build">Build</div></div>
+        <div class="stat"><div class="n">07</div><div class="l" id="stat-int">Interventions</div></div>
+      </div>
+    </div>
+
+    <!-- Desktop: right panel -->
+    <div class="info">
+      <div class="info-card">
+        <div class="info-title">
+          <span id="info-title-label">Interventions</span>
+          <span id="count">07</span>
+        </div>
+        <div class="hotspot-list" id="hotspot-list"></div>
+      </div>
+    </div>
+
+    <!-- Deck: shared desktop+mobile -->
+    <div class="deck" id="deck">
+      <div class="deck-row">
+        <div class="labels">
+          <span id="lbl-before" class="active-label">Before · 2024</span>
+          <span style="opacity:.3">—</span>
+          <span id="lbl-after">After · 2025</span>
+        </div>
+        <div id="pct" style="font-family:'Fraunces',serif; font-size:14px; color:var(--ink-dim);">0<span style="opacity:.5">%</span></div>
+      </div>
+      <div class="scrub-wrap">
+        <div class="scrub-readout" id="readout" style="left:0%">Before<span>2024</span></div>
+        <div class="scrub-track">
+          <div class="scrub-progress"></div>
+          <div class="scrub-ticks">
+            <div class="scrub-tick"></div><div class="scrub-tick"></div>
+            <div class="scrub-tick"></div><div class="scrub-tick"></div>
+            <div class="scrub-tick"></div><div class="scrub-tick"></div>
+            <div class="scrub-tick"></div><div class="scrub-tick"></div>
+          </div>
+        </div>
+        <input id="scrub" class="scrub-range" type="range" min="0" max="1000" value="0" step="1" />
+      </div>
+      <div class="deck-tools">
+        <div class="segmented" id="time-seg">
+          <button data-time="day" class="on" id="btn-day">Day</button>
+          <button data-time="dusk" id="btn-dusk">Dusk</button>
+          <button data-time="night" id="btn-night">Night</button>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-ghost" id="btn-play">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1 0 L9 5 L1 10 Z"/></svg>
+            <span id="btn-play-label">Play</span>
+          </button>
+          <button class="btn-ghost" id="btn-cut"><span id="btn-cut-label">Cutaway</span></button>
+          <button class="btn-ghost" id="btn-reset"><span id="btn-reset-label">Reset view</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+      <div class="l-inner">
+        <span id="loader-text">Preparing model</span>
+        <div class="l-bar"></div>
+      </div>
+    </div>
+
+    <!-- Tooltip -->
+    <div class="hotspot-tooltip" id="tooltip"></div>
+  </div>
+
+  <!-- i18n: runs before Three.js module -->
+  <script>
+  (function() {
+    var lang = new URL(location.href).searchParams.get('lang') || 'en';
+    window.__LANG = lang;
+
+    var S = {
+      en: {
+        eyebrow: 'Refurbishment · 2025',
+        titleHtml: 'From dark loft-bed cell to <em>compact sanctuary</em>.',
+        desc: '9 square meters at 20 rue Saint-Claude, Paris 75004. Drag the slider to scrub between the original state and the finished refurbishment. Rotate the model to inspect every intervention — built in 16 weeks.',
+        statFp: 'Footprint', statBuild: 'Build', statInt: 'Interventions',
+        metaCase: 'Case study 04', metaSub: 'Before → After · interactive',
+        infoTitle: 'Interventions',
+        lblBefore: 'Before · 2024', lblAfter: 'After · 2025',
+        play: 'Play', pause: 'Pause', cutaway: 'Cutaway', reset: 'Reset view',
+        day: 'Day', dusk: 'Dusk', night: 'Night',
+        hint: 'Drag slider · Orbit with mouse · Click numbers to inspect',
+        loader: 'Preparing model',
+        readout: ['Before|2024','Demolition|stripped back','Finishing|fit-out','After|2025'],
+        before: 'Before', after: 'After',
+        hotspots: [
+          { name:'Oak bed alcove', zone:'Sleep', bef:'Crude black metal loft bed at 1.9m with exposed slats and plastic bags on top.', aft:'Custom oak alcove 145×194cm, cream-linen cushion back. LED cove, floating shelf, wall sconce.' },
+          { name:'Hidden kitchen cabinet', zone:'Kitchen', bef:'No kitchen — bare plaster wall.', aft:'Matte-black cabinet: mirror back, stone counter, induction hob, compact sink with oak drawers.' },
+          { name:'Mirror-door wardrobe', zone:'Storage', bef:'No wardrobe — clothes on the floor.', aft:'Full-height oak wardrobe with three mirror push-latch doors.' },
+          { name:'Oak plank floor', zone:'Floor', bef:'Sticky navy-blue lino, scuffed and stained.', aft:'Light French oak planks along the long axis.' },
+          { name:'Hot-water hatch', zone:'Utility', bef:'No hot-water tank in unit.', aft:'Water heater concealed inside the bed base, magnetic oak panel access.' },
+          { name:'Microcement wet-room', zone:'Bath', bef:'Dated cream delft tiles, peeling plaster, pedestal sink.', aft:'Seamless warm-beige microcement, rainshower, floating sink, wall-hung WC.' },
+          { name:'Washer in bed base', zone:'Utility', bef:'No in-unit laundry.', aft:'Full washer in bed carcass, round porthole on the west face.' }
+        ]
+      },
+      fr: {
+        eyebrow: 'Rénovation · 2025',
+        titleHtml: "D'une cellule sombre à un <em>sanctuaire compact</em>.",
+        desc: "9 mètres carrés au 20 rue Saint-Claude, Paris 75004. Glissez le curseur pour passer de l'état d'origine à la rénovation terminée. Faites pivoter le modèle pour inspecter chaque intervention — réalisée en 16 semaines.",
+        statFp: 'Surface', statBuild: 'Chantier', statInt: 'Interventions',
+        metaCase: 'Cas concret 04', metaSub: 'Avant → Après · interactif',
+        infoTitle: 'Interventions',
+        lblBefore: 'Avant · 2024', lblAfter: 'Après · 2025',
+        play: 'Lire', pause: 'Pause', cutaway: 'Vue éclatée', reset: 'Vue initiale',
+        day: 'Jour', dusk: 'Crépuscule', night: 'Nuit',
+        hint: 'Glissez · Orbite souris · Cliquez les numéros',
+        loader: 'Chargement…',
+        readout: ['Avant|2024','Démolition|travaux','Finitions|pose','Après|2025'],
+        before: 'Avant', after: 'Après',
+        hotspots: [
+          { name:'Alcôve lit chêne', zone:'Chambre', bef:'Lit mezzanine métal noir à 1,9m, lattes apparentes et sacs plastiques.', aft:'Alcôve chêne 145×194cm, dossier lin crème. Bandeau LED, étagère flottante, liseuse.' },
+          { name:'Cuisine dissimulée', zone:'Cuisine', bef:'Aucune cuisine — mur en plâtre nu.', aft:'Meuble noir mat : fond miroir, plan pierre, induction, évier compact et tiroirs chêne.' },
+          { name:'Penderie à miroirs', zone:'Rangement', bef:'Pas de penderie — vêtements au sol.', aft:'Penderie pleine hauteur, trois portes miroir à poussette.' },
+          { name:'Parquet chêne massif', zone:'Sol', bef:'Lino bleu marine collant, rayé et taché.', aft:'Lames de chêne clair dans le sens de la longueur.' },
+          { name:'Trappe chauffe-eau', zone:'Technique', bef:'Pas de chauffe-eau dans le logement.', aft:'Chauffe-eau dans le socle du lit, panneau magnétique chêne.' },
+          { name:'Salle d\'eau microciment', zone:'Salle de bain', bef:'Carrelage daté, plâtre décollé, lavabo colonne.', aft:'Microciment beige, douche à l\'italienne, vasque suspendue, WC suspendu.' },
+          { name:'Lave-linge intégré', zone:'Technique', bef:'Pas de lave-linge dans le logement.', aft:'Lave-linge dans le socle du lit, hublot rond côté chambre.' }
+        ]
+      }
+    };
+
+    var t = S[lang] || S.en;
+    window.__T = t;
+
+    function set(id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; }
+    function setText(id, text) { var el = document.getElementById(id); if (el) el.textContent = text; }
+
+    // Apply all translations
+    set('mob-title', t.titleHtml);
+    set('caption-h1', t.titleHtml);
+    setText('mob-eyebrow', t.eyebrow);
+    setText('caption-eyebrow', t.eyebrow);
+    setText('caption-p', t.desc);
+    ['mob-stat-fp','stat-fp'].forEach(function(id){ setText(id, t.statFp); });
+    ['mob-stat-build','stat-build'].forEach(function(id){ setText(id, t.statBuild); });
+    ['mob-stat-int','stat-int'].forEach(function(id){ setText(id, t.statInt); });
+    setText('meta-case', t.metaCase);
+    setText('meta-sub', t.metaSub);
+    setText('info-title-label', t.infoTitle);
+    set('lbl-before', t.lblBefore);
+    set('lbl-after', t.lblAfter);
+    setText('btn-play-label', t.play);
+    setText('btn-cut-label', t.cutaway);
+    setText('btn-reset-label', t.reset);
+    setText('btn-day', t.day);
+    setText('btn-dusk', t.dusk);
+    setText('btn-night', t.night);
+    setText('hint-text', t.hint);
+    setText('loader-text', t.loader);
+  })();
+  </script>
+
+  <script>
+  window.onerror = function(msg, src, line, col, err) {
+    var el = document.getElementById('loader');
+    if (el) {
+      el.style.opacity = '1';
+      el.style.display = 'grid';
+      el.innerHTML = '<div style="text-align:center;padding:20px;color:#f5f1ea;font-family:monospace;font-size:12px;max-width:600px">' +
+        '<div style="color:#ff6b6b;font-size:14px;margin-bottom:12px">⚠ JS Error</div>' +
+        '<div>' + msg + '</div>' +
+        '<div style="opacity:0.5;margin-top:8px">' + src + ':' + line + '</div>' +
+        '</div>';
+    }
+    console.error('3D Error:', msg, src, line);
+    return false;
+  };
+  </script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/examples/js/controls/OrbitControls.js"></script>
+
+  <script>
+
+// ---------- Room dimensions (meters) ----------
+// Small Parisian studio, ~15 m² = roughly 3.2 x 4.7 m, with a small bathroom alcove
+// Real plan: 9m² studio, 20 rue Saint-Claude 75004 Paris
+// Main room 2.88m × 2.66m  +  bathroom alcove 0.82m × 1.11m (protrudes back-left)
+const W = 2.88;  // main room width (x)
+const D = 2.66;  // main room depth (z)
+const H = 2.55;  // ceiling height (y)
+const BW = 0.82; // bathroom width
+const BD = 1.11; // bathroom depth (alcove beyond back wall)
+
+// ============================================================
+// SCENE SETUP
+// ============================================================
+const wrap = document.getElementById('canvas-wrap');
+const OrbitControls = THREE.OrbitControls;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1814);
+
+const camera = new THREE.PerspectiveCamera(32, wrap.clientWidth / wrap.clientHeight, 0.1, 100);
+const initialCam = new THREE.Vector3(7.5, 5.8, 8.2);
+camera.position.copy(initialCam);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+wrap.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 4;
+controls.maxDistance = 14;
+controls.maxPolarAngle = Math.PI * 0.46;
+controls.minPolarAngle = Math.PI * 0.12;
+controls.target.set(W/2, 1.1, D/2);
+controls.update();
+
+// ============================================================
+// LIGHTING
+// ============================================================
+const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambient);
+
+const hemi = new THREE.HemisphereLight(0xdfe8f2, 0x3a3228, 0.5);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xfff2d8, 1.2);
+sun.position.set(-4, 8, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -8;
+sun.shadow.camera.right = 8;
+sun.shadow.camera.top = 8;
+sun.shadow.camera.bottom = -8;
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 24;
+sun.shadow.bias = -0.0005;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+
+// Window light (through the window on +Z wall)
+const windowLight = new THREE.PointLight(0xfff6e0, 1.5, 6, 1.5);
+windowLight.position.set(W/2 + 0.6, 1.6, D - 0.05);
+scene.add(windowLight);
+
+// Warm interior bounce (after)
+const warmBounce = new THREE.PointLight(0xffd8a8, 0, 5, 2);
+warmBounce.position.set(W/2, 1.4, D/2);
+scene.add(warmBounce);
+
+// Bed LED strip (after)
+const bedLed = new THREE.PointLight(0xffdcb0, 0, 2, 2);
+bedLed.position.set(0.06, 0.68, D - BD - 1.2);
+scene.add(bedLed);
+
+// Shower light (after)
+const showerLight = new THREE.PointLight(0xffffff, 0, 2.2, 2);
+showerLight.position.set(W - BW/2, H - 0.3, D - BD/2);
+scene.add(showerLight);
+
+// ============================================================
+// MATERIAL HELPERS
+// ============================================================
+// Procedural textures via canvas
+function makeTexture(w, h, draw) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  draw(ctx, w, h);
+  const t = new THREE.CanvasTexture(c);
+  t.encoding = THREE.sRGBEncoding;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  return t;
+}
+
+// ---- BEFORE: yellowed plaster wall ----
+const yellowWallTex = makeTexture(512, 512, (ctx, w, h) => {
+  // base yellowed color
+  const g = ctx.createLinearGradient(0, 0, 0, h);
+  g.addColorStop(0, '#d9c684');
+  g.addColorStop(0.5, '#d3c084');
+  g.addColorStop(1, '#c5b375');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  // stains / grime
+  for (let i = 0; i < 60; i++) {
+    const x = Math.random() * w, y = Math.random() * h;
+    const r = 30 + Math.random() * 90;
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grd.addColorStop(0, `rgba(80,60,30,${0.05 + Math.random()*0.08})`);
+    grd.addColorStop(1, 'rgba(80,60,30,0)');
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+  }
+  // peeling cracks
+  ctx.strokeStyle = 'rgba(90,70,40,0.25)'; ctx.lineWidth = 0.8;
+  for (let i = 0; i < 12; i++) {
+    ctx.beginPath();
+    let x = Math.random()*w, y = Math.random()*h;
+    ctx.moveTo(x, y);
+    for (let j = 0; j < 6; j++) {
+      x += (Math.random()-0.5)*60; y += (Math.random()-0.5)*60;
+      ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  // noise
+  const img = ctx.getImageData(0,0,w,h); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (Math.random() - 0.5) * 16;
+    d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  }
+  ctx.putImageData(img, 0, 0);
+});
+
+// ---- BEFORE: blue lino floor ----
+const blueLinoTex = makeTexture(512, 512, (ctx, w, h) => {
+  ctx.fillStyle = '#2b4358'; ctx.fillRect(0, 0, w, h);
+  // scuffs
+  for (let i = 0; i < 200; i++) {
+    const x = Math.random()*w, y = Math.random()*h;
+    ctx.fillStyle = `rgba(${Math.random()>0.5?'10,30,45':'80,100,120'},${Math.random()*0.15})`;
+    ctx.fillRect(x, y, 1 + Math.random()*3, 1 + Math.random()*3);
+  }
+  // streaks
+  for (let i = 0; i < 20; i++) {
+    ctx.strokeStyle = `rgba(20,35,50,${0.1 + Math.random()*0.15})`;
+    ctx.lineWidth = 2 + Math.random()*6;
+    ctx.beginPath();
+    ctx.moveTo(Math.random()*w, Math.random()*h);
+    ctx.lineTo(Math.random()*w, Math.random()*h);
+    ctx.stroke();
+  }
+  // noise
+  const img = ctx.getImageData(0,0,w,h); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (Math.random() - 0.5) * 20;
+    d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  }
+  ctx.putImageData(img, 0, 0);
+});
+
+// ---- AFTER: light oak wood ----
+const oakTex = makeTexture(512, 512, (ctx, w, h) => {
+  ctx.fillStyle = '#d4b389'; ctx.fillRect(0, 0, w, h);
+  // wood grain lines
+  for (let i = 0; i < 80; i++) {
+    const y = Math.random() * h;
+    ctx.strokeStyle = `rgba(${120+Math.random()*30},${80+Math.random()*20},${40+Math.random()*20},${0.15 + Math.random()*0.25})`;
+    ctx.lineWidth = 0.5 + Math.random()*1.2;
+    ctx.beginPath();
+    let x = 0, yy = y;
+    while (x < w) {
+      yy += (Math.random() - 0.5) * 4;
+      ctx.lineTo(x, yy);
+      x += 3;
+    }
+    ctx.stroke();
+  }
+  // plank lines
+  ctx.strokeStyle = 'rgba(80,50,25,0.35)';
+  ctx.lineWidth = 1.5;
+  for (let y = 0; y < h; y += 96) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  // knots
+  for (let i = 0; i < 8; i++) {
+    const x = Math.random()*w, y = Math.random()*h;
+    const r = 3 + Math.random()*6;
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grd.addColorStop(0, 'rgba(90,55,25,0.6)');
+    grd.addColorStop(1, 'rgba(90,55,25,0)');
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+  }
+});
+
+// ---- AFTER: oak plank flooring ----
+const oakFloorTex = makeTexture(1024, 1024, (ctx, w, h) => {
+  ctx.fillStyle = '#c9a074'; ctx.fillRect(0, 0, w, h);
+  // planks (horizontal strips)
+  const plankH = 128;
+  for (let y = 0; y < h; y += plankH) {
+    const tone = 190 + Math.random()*30;
+    const r = tone, g = Math.floor(tone*0.78), b = Math.floor(tone*0.56);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
+    ctx.fillRect(0, y, w, plankH);
+    // grain lines in plank
+    for (let i = 0; i < 20; i++) {
+      ctx.strokeStyle = `rgba(120,80,40,${0.1 + Math.random()*0.15})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      const ly = y + Math.random() * plankH;
+      let x = 0, yy = ly;
+      while (x < w) { yy += (Math.random()-0.5)*2; ctx.lineTo(x, yy); x += 4; }
+      ctx.stroke();
+    }
+    // plank edge
+    ctx.strokeStyle = 'rgba(60,40,20,0.5)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    // random cross-cuts
+    if (Math.random() > 0.4) {
+      const cx = Math.random()*w;
+      ctx.beginPath(); ctx.moveTo(cx, y); ctx.lineTo(cx, y + plankH); ctx.stroke();
+    }
+  }
+});
+
+// ---- AFTER: microcement (bathroom) ----
+const microcementTex = makeTexture(512, 512, (ctx, w, h) => {
+  ctx.fillStyle = '#e8ddc9'; ctx.fillRect(0, 0, w, h);
+  const img = ctx.getImageData(0,0,w,h); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (Math.random() - 0.5) * 14;
+    d[i]+=n; d[i+1]+=n*0.9; d[i+2]+=n*0.7;
+  }
+  ctx.putImageData(img, 0, 0);
+  // subtle cloudy patches
+  for (let i = 0; i < 30; i++) {
+    const x = Math.random()*w, y = Math.random()*h;
+    const r = 30 + Math.random()*70;
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grd.addColorStop(0, 'rgba(200,180,150,0.08)');
+    grd.addColorStop(1, 'rgba(200,180,150,0)');
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(x,y,r,0,7); ctx.fill();
+  }
+});
+
+// ---- BEFORE: dated blue-flower bathroom tile ----
+const tileTex = makeTexture(512, 512, (ctx, w, h) => {
+  // cream base
+  ctx.fillStyle = '#ece5d0'; ctx.fillRect(0, 0, w, h);
+  // 6x6 grid
+  const s = w / 6;
+  ctx.strokeStyle = 'rgba(180,170,140,0.6)'; ctx.lineWidth = 1.5;
+  for (let i = 0; i <= 6; i++) {
+    ctx.beginPath(); ctx.moveTo(i*s, 0); ctx.lineTo(i*s, h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i*s); ctx.lineTo(w, i*s); ctx.stroke();
+  }
+  // blue delft pattern each tile
+  for (let x = 0; x < 6; x++) for (let y = 0; y < 6; y++) {
+    const cx = x*s + s/2, cy = y*s + s/2;
+    ctx.fillStyle = '#3a5a9c';
+    // 4 petals
+    for (let a = 0; a < 4; a++) {
+      const ang = a * Math.PI/2;
+      const px = cx + Math.cos(ang) * s*0.22;
+      const py = cy + Math.sin(ang) * s*0.22;
+      ctx.beginPath(); ctx.arc(px, py, s*0.12, 0, 7); ctx.fill();
+    }
+    ctx.fillStyle = '#5a7ab8';
+    ctx.beginPath(); ctx.arc(cx, cy, s*0.1, 0, 7); ctx.fill();
+    ctx.fillStyle = '#ece5d0';
+    ctx.beginPath(); ctx.arc(cx, cy, s*0.04, 0, 7); ctx.fill();
+  }
+});
+
+// ---- AFTER: clean white wall ----
+const whiteWallTex = makeTexture(512, 512, (ctx, w, h) => {
+  ctx.fillStyle = '#f7f2e9'; ctx.fillRect(0, 0, w, h);
+  // very subtle noise
+  const img = ctx.getImageData(0,0,w,h); const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (Math.random() - 0.5) * 6;
+    d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  }
+  ctx.putImageData(img, 0, 0);
+});
+
+// Materials
+const MATS = {};
+function makeMat(name, opts) {
+  const m = new THREE.MeshStandardMaterial(opts);
+  // Start opaque — depth writes work correctly. Transparent flag is toggled
+  // dynamically in setMorph when opacity needs to drop below 1.
+  m.transparent = false;
+  m.opacity = 1;
+  MATS[name] = m;
+  return m;
+}
+
+// BEFORE mats
+yellowWallTex.repeat.set(1,1);
+makeMat('before_wall', { map: yellowWallTex, roughness: 0.95, color: 0xffffff });
+blueLinoTex.repeat.set(2,2);
+makeMat('before_floor', { map: blueLinoTex, roughness: 0.6, color: 0xffffff });
+tileTex.repeat.set(1,1);
+makeMat('before_tile', { map: tileTex, roughness: 0.3, color: 0xffffff });
+makeMat('before_bathwall', { color: 0xe8ddc4, roughness: 0.9 });
+makeMat('before_ceiling', { color: 0xe8dcc0, roughness: 0.95 });
+makeMat('beam', { color: 0x4b3524, roughness: 0.85 });
+makeMat('beam_white', { color: 0xf0e8d4, roughness: 0.9 });
+makeMat('black_metal', { color: 0x141214, roughness: 0.55, metalness: 0.3 });
+makeMat('wood_slat', { color: 0xb68a5a, roughness: 0.85 });
+makeMat('suitcase', { color: 0x1f1d1d, roughness: 0.6 });
+makeMat('old_door', { color: 0xc8c1b0, roughness: 0.8 });
+makeMat('trashbag', { color: 0x0e0e10, roughness: 0.4, metalness: 0.0 });
+makeMat('heater', { color: 0xe8e2d4, roughness: 0.8 });
+makeMat('shelf_bracket', { color: 0x1a1817, roughness: 0.5, metalness: 0.3 });
+makeMat('old_sink', { color: 0xeae4d6, roughness: 0.3 });
+makeMat('old_toilet_seat', { color: 0x1a1817, roughness: 0.3 });
+
+// AFTER mats
+oakTex.repeat.set(1,1);
+makeMat('after_oak', { map: oakTex, roughness: 0.55, color: 0xffffff });
+oakFloorTex.repeat.set(1,1);
+makeMat('after_floor', { map: oakFloorTex, roughness: 0.45, color: 0xffffff });
+whiteWallTex.repeat.set(1,1);
+makeMat('after_wall', { map: whiteWallTex, roughness: 0.85, color: 0xffffff });
+microcementTex.repeat.set(1,1);
+makeMat('after_microcement', { map: microcementTex, roughness: 0.75, color: 0xffffff });
+makeMat('after_ceiling', { color: 0xf7f2e9, roughness: 0.9 });
+makeMat('cream_cushion', { color: 0xf2ead7, roughness: 0.95 });
+makeMat('white_bedding', { color: 0xfaf5eb, roughness: 0.95 });
+makeMat('mirror', { color: 0xdde5ea, roughness: 0.05, metalness: 0.9 });
+makeMat('frosted_glass', { color: 0xe8ede6, roughness: 0.25, metalness: 0.1, opacity: 1, transparent: true });
+frostedGlassOverride();
+function frostedGlassOverride(){ MATS.frosted_glass.transmission = 0.0; }
+makeMat('matte_black', { color: 0x1a1817, roughness: 0.4, metalness: 0.2 });
+makeMat('tv_screen', { color: 0x06121f, roughness: 0.1, metalness: 0.1, emissive: 0x0a2540, emissiveIntensity: 0.6 });
+makeMat('led_strip', { color: 0xffe6b8, emissive: 0xffcf8a, emissiveIntensity: 1.2, roughness: 0.8 });
+makeMat('clean_beam', { color: 0x3c2a1b, roughness: 0.7 });
+
+// Helper: box
+function box(w, h, d, mat, x, y, z, rotY=0) {
+  const g = new THREE.BoxGeometry(w, h, d);
+  const m = new THREE.Mesh(g, mat);
+  m.position.set(x, y, z);
+  m.rotation.y = rotY;
+  m.castShadow = true;
+  m.receiveShadow = true;
+  return m;
+}
+
+function plane(w, h, mat, x, y, z, rotX = 0, rotY = 0, rotZ = 0) {
+  const g = new THREE.PlaneGeometry(w, h);
+  const m = new THREE.Mesh(g, mat);
+  m.position.set(x, y, z);
+  m.rotation.set(rotX, rotY, rotZ);
+  m.receiveShadow = true;
+  return m;
+}
+
+// ============================================================
+// BUILD THE ROOM
+// ============================================================
+// Two groups: beforeGroup and afterGroup, crossfaded via opacity
+const beforeGroup = new THREE.Group();
+const afterGroup = new THREE.Group();
+const sharedGroup = new THREE.Group();
+scene.add(beforeGroup, afterGroup, sharedGroup);
+
+// ---------- SHARED: structural walls (always present) ----------
+// Floor base (just a plane for shadow catching — the two states put their own flooring on top)
+const shadowCatcher = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.ShadowMaterial({ opacity: 0.2 })
+);
+shadowCatcher.rotation.x = -Math.PI/2;
+shadowCatcher.position.y = -0.001;
+shadowCatcher.receiveShadow = true;
+sharedGroup.add(shadowCatcher);
+
+// Window frame (preserved through renovation — casement window)
+const windowFrameMat = makeMat('window_frame', { color: 0xffffff, roughness: 0.6 });
+function buildWindow(group, frameMat) {
+  const g = new THREE.Group();
+  // frame
+  const fw = 0.9, fh = 1.4, ft = 0.06;
+  g.add(box(fw, ft, ft, frameMat, 0, -fh/2, 0));
+  g.add(box(fw, ft, ft, frameMat, 0, fh/2, 0));
+  g.add(box(ft, fh, ft, frameMat, -fw/2, 0, 0));
+  g.add(box(ft, fh, ft, frameMat, fw/2, 0, 0));
+  // center mullion
+  g.add(box(ft*0.6, fh, ft, frameMat, 0, 0, 0));
+  // horizontal mullion
+  g.add(box(fw, ft*0.6, ft, frameMat, 0, 0, 0));
+  // glass (sky visible)
+  const skyMat = new THREE.MeshBasicMaterial({
+    color: 0xc5d3e3, transparent: true, opacity: 0.75
+  });
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(fw - ft, fh - ft), skyMat);
+  glass.position.z = 0.001;
+  g.add(glass);
+  return g;
+}
+
+// ============================================================
+// BEFORE STATE
+// ============================================================
+{
+  const G = beforeGroup;
+
+  // ---- L-shaped floor (blue lino) ----
+  G.add(plane(W, D, MATS.before_floor, W/2, 0.001, D/2, -Math.PI/2));
+  G.add(plane(BW, BD, MATS.before_floor, BW/2, 0.002, D + BD/2, -Math.PI/2));
+
+  // ---- L-shaped walls ----
+  // FRONT wall (z=0) — whole width, entry is on right side
+  G.add(plane(W, H, MATS.before_wall, W/2, H/2, 0, 0, 0, 0));
+  // LEFT wall (x=0) — full extent including bath alcove (D + BD)
+  G.add(plane(D + BD, H, MATS.before_wall, 0, H/2, (D + BD)/2, 0, Math.PI/2, 0));
+  // RIGHT wall (x=W) — only along main room
+  G.add(plane(D, H, MATS.before_wall, W, H/2, D/2, 0, -Math.PI/2, 0));
+  // BACK wall of main room (z=D), only x=BW..W (the rest is the alcove opening)
+  G.add(plane(W - BW, H, MATS.before_wall, BW + (W - BW)/2, H/2, D, 0, Math.PI, 0));
+  // Alcove right wall (x=BW, from z=D to z=D+BD)
+  G.add(plane(BD, H, MATS.before_tile, BW, H/2, D + BD/2, 0, -Math.PI/2, 0));
+  // Alcove back wall (z=D+BD)
+  G.add(plane(BW, H, MATS.before_tile, BW/2, H/2, D + BD, 0, Math.PI, 0));
+
+  // Ceiling over main room + over alcove
+  G.add(plane(W, D, MATS.before_ceiling, W/2, H, D/2, Math.PI/2, 0, 0));
+  G.add(plane(BW, BD, MATS.before_ceiling, BW/2, H, D + BD/2, Math.PI/2, 0, 0));
+
+  // Exposed beams (dark wood) running along width (x)
+  for (let i = 0; i < 4; i++) {
+    const z = 0.45 + i * (D - 0.9) / 3;
+    const beam = box(W, 0.16, 0.16, MATS.beam, W/2, H - 0.08, z);
+    G.add(beam);
+  }
+
+  // Window (front wall, west side of main room)
+  const win = buildWindow(G, windowFrameMat);
+  win.position.set(W * 0.3, 1.65, 0.03);
+  win.scale.set(0.85, 0.8, 1);
+  G.add(win);
+
+  // Entry door (on right wall x=W, near front)
+  const doorMat = makeMat('before_door', { color: 0xbfb7a2, roughness: 0.75 });
+  const door = box(0.04, 2.05, 0.8, doorMat, W - 0.02, 1.025, 0.6);
+  G.add(door);
+  G.add(box(0.04, 0.04, 0.04, MATS.black_metal, W - 0.04, 1.05, 0.26));
+  // Intercom panel
+  G.add(box(0.04, 0.28, 0.2, MATS.old_door, W - 0.02, 1.6, 1.1));
+
+  // Heater (back wall, right half)
+  G.add(box(0.7, 0.5, 0.08, MATS.heater, W - 0.5, 0.55, 0.04, 0));
+
+  // ---- Loft bed (against back wall of main room, not in alcove) ----
+  const LOFT_H = 1.9;
+  const LOFT_W = 1.3;
+  const LOFT_D = 2.0;
+  const LOFT_X = BW + LOFT_W/2 + 0.15;
+  const LOFT_Z = D - LOFT_D/2 - 0.1;
+  // 4 corner posts
+  const post = (x, z) => box(0.08, LOFT_H, 0.08, MATS.black_metal, x, LOFT_H/2, z);
+  G.add(post(LOFT_X - LOFT_W/2 + 0.04, LOFT_Z - LOFT_D/2 + 0.04));
+  G.add(post(LOFT_X + LOFT_W/2 - 0.04, LOFT_Z - LOFT_D/2 + 0.04));
+  G.add(post(LOFT_X - LOFT_W/2 + 0.04, LOFT_Z + LOFT_D/2 - 0.04));
+  G.add(post(LOFT_X + LOFT_W/2 - 0.04, LOFT_Z + LOFT_D/2 - 0.04));
+  // platform frame (black)
+  G.add(box(LOFT_W, 0.1, 0.08, MATS.black_metal, LOFT_X, LOFT_H - 0.05, LOFT_Z - LOFT_D/2 + 0.04));
+  G.add(box(LOFT_W, 0.1, 0.08, MATS.black_metal, LOFT_X, LOFT_H - 0.05, LOFT_Z + LOFT_D/2 - 0.04));
+  G.add(box(0.08, 0.1, LOFT_D, MATS.black_metal, LOFT_X - LOFT_W/2 + 0.04, LOFT_H - 0.05, LOFT_Z));
+  G.add(box(0.08, 0.1, LOFT_D, MATS.black_metal, LOFT_X + LOFT_W/2 - 0.04, LOFT_H - 0.05, LOFT_Z));
+  // safety rail
+  G.add(box(LOFT_W, 0.6, 0.04, MATS.black_metal, LOFT_X, LOFT_H + 0.3, LOFT_Z + LOFT_D/2 - 0.04));
+  // horizontal midwaist band
+  G.add(box(0.04, 0.04, LOFT_D, MATS.black_metal, LOFT_X - LOFT_W/2 + 0.04, 1.0, LOFT_Z));
+  G.add(box(0.04, 0.04, LOFT_D, MATS.black_metal, LOFT_X + LOFT_W/2 - 0.04, 1.0, LOFT_Z));
+  // wood slats
+  for (let i = 0; i < 12; i++) {
+    const sx = LOFT_X - LOFT_W/2 + 0.08 + i * (LOFT_W - 0.16)/11;
+    G.add(box(0.06, 0.03, LOFT_D - 0.2, MATS.wood_slat, sx, LOFT_H - 0.08, LOFT_Z));
+  }
+  // ladder (leaning)
+  const ladderMat = MATS.black_metal;
+  const ladG = new THREE.Group();
+  // two rails
+  ladG.add(box(0.05, 2.0, 0.05, ladderMat, -0.2, 1.0, 0));
+  ladG.add(box(0.05, 2.0, 0.05, ladderMat, 0.2, 1.0, 0));
+  for (let i = 0; i < 6; i++) {
+    ladG.add(box(0.45, 0.04, 0.04, ladderMat, 0, 0.3 + i * 0.3, 0));
+  }
+  ladG.position.set(LOFT_X + LOFT_W/2 - 0.15, 0, LOFT_Z - LOFT_D/2 + 0.3);
+  ladG.rotation.z = -0.12;
+  ladG.rotation.y = Math.PI/2;
+  G.add(ladG);
+  // messy plastic bag on top
+  const bag = new THREE.Mesh(
+    new THREE.SphereGeometry(0.35, 12, 10),
+    MATS.trashbag
+  );
+  bag.position.set(LOFT_X - 0.1, LOFT_H + 0.22, LOFT_Z - 0.3);
+  bag.scale.set(1.2, 0.8, 1);
+  bag.castShadow = true;
+  G.add(bag);
+  const bag2 = bag.clone();
+  bag2.position.set(LOFT_X + 0.25, LOFT_H + 0.18, LOFT_Z + 0.1);
+  bag2.scale.set(0.8, 0.6, 0.9);
+  G.add(bag2);
+
+  // Suitcases on floor
+  const suit1 = box(0.5, 0.72, 0.28, MATS.suitcase, 0.35, 0.36, 1.0);
+  G.add(suit1);
+  const suit2 = box(0.5, 0.7, 0.28, MATS.suitcase, 0.85, 0.35, 1.0);
+  G.add(suit2);
+
+  // Wall shelves (crude black brackets, no shelf content)
+  const shelf1 = box(0.85, 0.025, 0.22, MATS.wood_slat, W - 0.12, 1.3, 1.2, Math.PI/2);
+  shelf1.rotation.y = Math.PI/2;
+  G.add(shelf1);
+  const shelf2 = shelf1.clone();
+  shelf2.position.y = 1.55;
+  G.add(shelf2);
+
+  // Bathroom: old tiled alcove (back-left, x:0..BW, z:D..D+BD)
+  const sinkMat = MATS.old_sink;
+  const sinkPed = box(0.16, 0.75, 0.16, sinkMat, 0.25, 0.375, D + 0.2);
+  G.add(sinkPed);
+  const sinkBowl = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.28, 0.22, 0.15, 20),
+    sinkMat
+  );
+  sinkBowl.position.set(0.28, 0.82, D + 0.2);
+  sinkBowl.scale.set(1.1, 1, 1);
+  sinkBowl.castShadow = true;
+  G.add(sinkBowl);
+  // Old toilet (in alcove, against back wall)
+  const toilet = box(0.4, 0.4, 0.42, MATS.old_sink, 0.45, 0.2, D + BD - 0.28);
+  G.add(toilet);
+  const cistern = box(0.38, 0.35, 0.14, MATS.old_sink, 0.45, 0.62, D + BD - 0.1);
+  G.add(cistern);
+  const seat = box(0.38, 0.03, 0.4, MATS.old_toilet_seat, 0.45, 0.41, D + BD - 0.3);
+  G.add(seat);
+  // Bathroom tiny window on left wall of alcove
+  const amberMat = new THREE.MeshBasicMaterial({ color: 0xff9240, transparent: true, opacity: 0.9 });
+  const bWin = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.2), amberMat);
+  bWin.position.set(0.001, 1.5, D + BD - 0.5);
+  bWin.rotation.y = Math.PI/2;
+  G.add(bWin);
+  G.add(box(0.02, 0.02, 0.34, MATS.old_door, 0.01, 1.36, D + BD - 0.5, 0));
+  G.add(box(0.02, 0.02, 0.34, MATS.old_door, 0.01, 1.64, D + BD - 0.5, 0));
+}
+
+// ============================================================
+// AFTER STATE
+// ============================================================
+{
+  const G = afterGroup;
+
+  // ---- L-shaped floor ----
+  // Main room: oak planks; bathroom alcove: microcement
+  G.add(plane(W, D, MATS.after_floor, W/2, 0.001, D/2, -Math.PI/2));
+  G.add(plane(BW, BD, MATS.after_microcement, BW/2, 0.003, D + BD/2, -Math.PI/2));
+
+  // ---- L-shaped walls ----
+  // FRONT wall (z=0)
+  G.add(plane(W, H, MATS.after_wall, W/2, H/2, 0, 0, 0, 0));
+  // LEFT wall (x=0) — main portion white, alcove portion microcement
+  G.add(plane(D, H, MATS.after_wall, 0, H/2, D/2, 0, Math.PI/2, 0));
+  G.add(plane(BD, H, MATS.after_microcement, 0, H/2, D + BD/2, 0, Math.PI/2, 0));
+  // RIGHT wall main room
+  G.add(plane(D, H, MATS.after_wall, W, H/2, D/2, 0, -Math.PI/2, 0));
+  // BACK wall main room (z=D), only x=BW..W (the rest is the alcove opening)
+  G.add(plane(W - BW, H, MATS.after_wall, BW + (W - BW)/2, H/2, D, 0, Math.PI, 0));
+  // Alcove right wall (x=BW, z=D..D+BD) — microcement
+  G.add(plane(BD, H, MATS.after_microcement, BW, H/2, D + BD/2, 0, -Math.PI/2, 0));
+  // Alcove back wall — microcement
+  G.add(plane(BW, H, MATS.after_microcement, BW/2, H/2, D + BD, 0, Math.PI, 0));
+
+  // Ceiling
+  G.add(plane(W, D, MATS.after_ceiling, W/2, H, D/2, Math.PI/2, 0, 0));
+  G.add(plane(BW, BD, MATS.after_ceiling, BW/2, H, D + BD/2, Math.PI/2, 0, 0));
+  for (let i = 0; i < 4; i++) {
+    const z = 0.45 + i * (D - 0.9) / 3;
+    const beam = box(W, 0.14, 0.14, MATS.clean_beam, W/2, H - 0.07, z);
+    G.add(beam);
+  }
+
+  // Window (front wall, west side — 141cm wide per plan)
+  const win = buildWindow(G, windowFrameMat);
+  win.position.set(0.9, 1.65, 0.03);
+  win.scale.set(0.95, 0.85, 1);
+  G.add(win);
+
+  // Entry door (on right wall x=W, near front) — ornate panelled door kept from original
+  const doorMat = makeMat('after_door', { color: 0xe8ddc8, roughness: 0.65 });
+  G.add(box(0.04, 2.05, 0.8, doorMat, W - 0.02, 1.025, 0.6));
+  // Door panel moldings
+  G.add(box(0.01, 0.7, 0.45, MATS.matte_black, W - 0.035, 0.5, 0.6));
+  G.add(box(0.01, 0.7, 0.45, MATS.matte_black, W - 0.035, 1.4, 0.6));
+  // Smart lock
+  G.add(box(0.03, 0.2, 0.06, MATS.matte_black, W - 0.04, 1.02, 0.26));
+
+  // ================================================================
+  // PLAN-ACCURATE LAYOUT — Studio 20 rue Saint-Claude (9m²)
+  // Main room W=2.88 × D=2.66; alcove BW=0.82 × BD=1.11 protrudes north
+  //
+  // South wall (z=0):  window (left)  |  TV wall (center)  |  door to corridor (right)
+  // East wall (x=W):   oak bed alcove, cushion-back, LED headboard
+  // West wall (x=0):   matte-black kitchen cabinet (south)  |  mirror wardrobe (north)
+  // North wall (z=D):  wall between alcove and main room, with opening into alcove
+  // Alcove (back-left): shower  |  floating sink & mirror  |  wall-hung WC
+  // ================================================================
+
+  // -------- BED ALCOVE (east wall, oak U) --------
+  // Bed: 145cm wide × 194cm long per plan; head at south, foot at north (near alcove opening)
+  const BED_L = 1.94;
+  const BED_W = 1.45;
+  const BED_FROM_S = 0.36;           // start from south wall (leaves room for rangement valise at foot? plan shows valise at both ends)
+  const BED_X_CENTER = W - BED_W/2 - 0.02;
+  const BED_Z_CENTER = BED_FROM_S + BED_L/2;
+  const BED_BASE_H = 0.50;           // storage base height
+  const BED_MATT_H = 0.20;
+  const BED_TOP = BED_BASE_H;
+
+  // Oak carcass base (contains drawers + washer + ballon access on wall side)
+  G.add(box(BED_W, BED_BASE_H, BED_L, MATS.after_oak, BED_X_CENTER, BED_BASE_H/2, BED_Z_CENTER));
+  // LED underglow strip
+  G.add(box(BED_W - 0.1, 0.015, BED_L - 0.1, MATS.led_strip, BED_X_CENTER, 0.02, BED_Z_CENTER));
+  // Drawer front reveals (facing west, toward room)
+  for (let k = 0; k < 3; k++) {
+    const dz = BED_FROM_S + 0.08 + k * ((BED_L - 0.16) / 3);
+    const dlen = (BED_L - 0.16) / 3;
+    // thin black reveal seam
+    G.add(box(0.003, BED_BASE_H - 0.04, 0.006, MATS.matte_black, BED_X_CENTER - BED_W/2 - 0.005, BED_BASE_H/2, dz + dlen));
+  }
+  // Washer porthole (on west face of bed base, visible from room)
+  const portG = new THREE.Group();
+  const portRing = new THREE.Mesh(
+    new THREE.RingGeometry(0.13, 0.16, 32),
+    new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.4, metalness: 0.5, side: THREE.DoubleSide })
+  );
+  const portGlass = new THREE.Mesh(
+    new THREE.CircleGeometry(0.13, 28),
+    new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.25, metalness: 0.3 })
+  );
+  portRing.position.z = 0.002;
+  portGlass.position.z = 0.001;
+  portG.add(portRing, portGlass);
+  portG.rotation.y = -Math.PI/2;
+  portG.position.set(BED_X_CENTER - BED_W/2 - 0.005, BED_BASE_H/2 + 0.02, BED_Z_CENTER + 0.35);
+  G.add(portG);
+
+  // Magnetic oak access panel for ballon d'eau chaude (on west face, different position)
+  const panelSeams = [];
+  const panY = BED_BASE_H/2 + 0.03;
+  const panZ = BED_Z_CENTER - 0.45;
+  for (const [dy, dz] of [[0.2,0.18],[0.2,-0.18],[-0.2,0.18],[-0.2,-0.18]]) {
+    G.add(box(0.003, 0.012, 0.012, MATS.matte_black, BED_X_CENTER - BED_W/2 - 0.006, panY + dy, panZ + dz));
+  }
+
+  // Oak back panel against east wall (full height of bed alcove, decorative)
+  const OAK_BACK_H = 1.85;
+  G.add(box(0.03, OAK_BACK_H, BED_L + 0.15, MATS.after_oak, W - 0.02, OAK_BACK_H/2, BED_Z_CENTER));
+  // Headboard LED cove (top of oak back panel) — warm strip
+  G.add(box(0.04, 0.02, BED_L - 0.3, MATS.led_strip, W - 0.06, OAK_BACK_H - 0.05, BED_Z_CENTER));
+  // Oak shelf above (floating, per photo 1761)
+  G.add(box(0.22, 0.03, BED_L - 0.3, MATS.after_oak, W - 0.13, OAK_BACK_H + 0.02, BED_Z_CENTER));
+  // small decor objects on shelf
+  G.add(box(0.08, 0.12, 0.05, MATS.matte_black, W - 0.13, OAK_BACK_H + 0.09, BED_Z_CENTER - 0.4));
+  G.add(box(0.12, 0.02, 0.16, MATS.cream_cushion, W - 0.13, OAK_BACK_H + 0.04, BED_Z_CENTER + 0.3));
+
+  // Wall sconce on oak panel (reading light, per photo 1754)
+  const sconce = box(0.04, 0.2, 0.05, MATS.matte_black, W - 0.06, BED_BASE_H + 0.6, BED_FROM_S + 0.22);
+  G.add(sconce);
+  const sconceGlow = new THREE.PointLight(0xffd28a, 0, 1.1, 2);
+  sconceGlow.position.set(W - 0.15, BED_BASE_H + 0.65, BED_FROM_S + 0.22);
+  G.add(sconceGlow);
+  G.userData = { ...(G.userData||{}), sconceGlow };
+
+  // Mattress
+  G.add(box(BED_W - 0.05, BED_MATT_H, BED_L - 0.04, MATS.white_bedding, BED_X_CENTER, BED_TOP + BED_MATT_H/2, BED_Z_CENTER));
+  // Duvet
+  G.add(box(BED_W - 0.08, 0.08, BED_L * 0.6, MATS.white_bedding, BED_X_CENTER, BED_TOP + BED_MATT_H + 0.02, BED_Z_CENTER + 0.15));
+  // Pillows near head (south end)
+  G.add(box(BED_W - 0.2, 0.11, 0.32, MATS.white_bedding, BED_X_CENTER, BED_TOP + BED_MATT_H + 0.06, BED_FROM_S + 0.3));
+  G.add(box(BED_W - 0.3, 0.1, 0.28, MATS.white_bedding, BED_X_CENTER + 0.05, BED_TOP + BED_MATT_H + 0.14, BED_FROM_S + 0.28));
+
+  // Cream cushion back (along the oak panel wall — doubles as sofa per photo 1761)
+  for (let k = 0; k < 3; k++) {
+    const cz = BED_FROM_S + 0.35 + k * (BED_L - 0.7) / 2;
+    G.add(box(0.24, 0.4, 0.6, MATS.cream_cushion, W - 0.18, BED_TOP + BED_MATT_H + 0.22, cz));
+  }
+
+  // -------- WARDROBE (west wall, north half, 3 mirror push-latch doors) --------
+  const WARD_W = 0.45;
+  const WARD_D = 1.25;   // covers from z=BD opening area downward
+  const WARD_Z_START = D - WARD_D - 0.05;
+  const WARD_X = WARD_W/2 + 0.015;
+  const WARD_Z_CENTER = WARD_Z_START + WARD_D/2;
+  G.add(box(WARD_W, H - 0.05, WARD_D, MATS.after_oak, WARD_X, (H - 0.05)/2, WARD_Z_CENTER));
+  // 3 mirror door fronts (vertical, on east face of wardrobe)
+  for (let k = 0; k < 3; k++) {
+    const seg = (WARD_D - 0.06) / 3;
+    const cz = WARD_Z_START + 0.03 + seg/2 + k * seg;
+    G.add(box(0.012, H - 0.12, seg - 0.02, MATS.mirror, WARD_X + WARD_W/2 + 0.006, (H - 0.05)/2, cz));
+    // push-latch dot
+    G.add(box(0.008, 0.018, 0.018, MATS.matte_black, WARD_X + WARD_W/2 + 0.013, 1.05, cz));
+  }
+
+  // -------- KITCHEN CABINET (west wall, south half — matte black fold-out unit) --------
+  // Per photo 1759: tall matte-black cabinet, opens revealing mirror-backed niche + white oak drawers under + hob + sink
+  const KIT_W = 0.55;   // cabinet depth from wall (x-direction)
+  const KIT_L = 1.30;   // length along wall (z-direction)
+  const KIT_Z_CENTER = KIT_L/2 + 0.05;
+  const KIT_X_CENTER = KIT_W/2 + 0.015;
+
+  // Tall black carcass
+  G.add(box(KIT_W, H - 0.05, KIT_L, MATS.matte_black, KIT_X_CENTER, (H - 0.05)/2, KIT_Z_CENTER));
+  // Fold-out doors (shown OPEN per photos — reveal mirror interior). Doors swing east, attached at z-edges
+  // Left door (at z = 0.05)
+  G.add(box(0.015, H - 0.1, KIT_L/2 - 0.03, MATS.matte_black, KIT_X_CENTER + KIT_W/2 + 0.3, (H - 0.05)/2, 0.3 + KIT_L/4));
+  // Inside mirror (visible between cabinet and open door, behind the countertop)
+  G.add(box(0.005, 1.1, KIT_L - 0.15, MATS.mirror, KIT_X_CENTER + KIT_W/2 - 0.005, 1.25, KIT_Z_CENTER));
+
+  // Under-counter white oak drawers (per photo 1759 — Ikea-style light oak)
+  const PALE_OAK = makeMat('pale_oak', { color: 0xe5d3b4, roughness: 0.7 });
+  const COUNT_H = 0.88;
+  for (let k = 0; k < 4; k++) {
+    G.add(box(KIT_W - 0.02, COUNT_H/4 - 0.01, KIT_L/2 - 0.08, PALE_OAK,
+             KIT_X_CENTER + 0.01, (k+0.5) * (COUNT_H/4), KIT_Z_CENTER - KIT_L/4));
+    // drawer handle (recessed black)
+    G.add(box(0.02, 0.02, 0.12, MATS.matte_black, KIT_X_CENTER + KIT_W/2 - 0.005, (k+0.5) * (COUNT_H/4), KIT_Z_CENTER - KIT_L/4));
+  }
+
+  // Countertop (matte white stone, crisp thin edge)
+  G.add(box(KIT_W - 0.01, 0.03, KIT_L/2, MATS.after_wall, KIT_X_CENTER + 0.005, COUNT_H + 0.015, KIT_Z_CENTER - KIT_L/4 + 0.06));
+
+  // Induction hob (matte black, 2 rings)
+  G.add(box(0.32, 0.015, 0.22, MATS.matte_black, KIT_X_CENTER + 0.1, COUNT_H + 0.033, KIT_Z_CENTER - KIT_L/4 - 0.15));
+  const ring = (cx, cz) => {
+    const r = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.07, 24), new THREE.MeshBasicMaterial({ color: 0x1a1a1a, side: THREE.DoubleSide }));
+    r.rotation.x = -Math.PI/2;
+    r.position.set(cx, COUNT_H + 0.042, cz);
+    return r;
+  };
+  G.add(ring(KIT_X_CENTER + 0.05, KIT_Z_CENTER - KIT_L/4 - 0.2));
+  G.add(ring(KIT_X_CENTER + 0.17, KIT_Z_CENTER - KIT_L/4 - 0.08));
+
+  // Sink (small white rectangular)
+  const SINK_X = KIT_X_CENTER + 0.18;
+  const SINK_Z = KIT_Z_CENTER - KIT_L/4 + 0.22;
+  G.add(box(0.28, 0.02, 0.22, MATS.after_wall, SINK_X, COUNT_H + 0.025, SINK_Z));
+  G.add(box(0.22, 0.07, 0.18, MATS.matte_black, SINK_X, COUNT_H - 0.03, SINK_Z));
+
+  // Two tall matte-black taps (per photo — two spouts)
+  for (const off of [-0.05, 0.05]) {
+    const tap = new THREE.Group();
+    tap.add(box(0.022, 0.22, 0.022, MATS.matte_black, 0, 0.11, 0));
+    tap.add(box(0.1, 0.022, 0.022, MATS.matte_black, 0.05, 0.22, 0));
+    tap.position.set(SINK_X - 0.14, COUNT_H + 0.03, SINK_Z + off);
+    G.add(tap);
+  }
+
+  // Under-cabinet LED (top interior)
+  G.add(box(0.03, 0.015, KIT_L - 0.15, MATS.led_strip, KIT_X_CENTER + KIT_W/2 - 0.02, 1.82, KIT_Z_CENTER));
+
+  // Upper drawer cabinet (pale oak, above countertop in north half)
+  const UPPER_Z = KIT_Z_CENTER + KIT_L/4;
+  G.add(box(KIT_W - 0.02, 0.82, KIT_L/2, PALE_OAK, KIT_X_CENTER + 0.01, COUNT_H + 0.45, UPPER_Z));
+  // recessed handles
+  for (let k = 0; k < 3; k++) {
+    G.add(box(0.02, 0.015, 0.12, MATS.matte_black, KIT_X_CENTER + KIT_W/2 - 0.005,
+             COUNT_H + 0.15 + k * 0.27, UPPER_Z));
+  }
+
+  // Trash bin under sink (glimpsed in photo)
+  G.add(box(0.22, 0.36, 0.22, MATS.matte_black, KIT_X_CENTER + 0.1, 0.18, KIT_Z_CENTER - KIT_L/4 + 0.48));
+
+  // -------- TV WALL (south wall, between window and door) --------
+  const TV_X = W - 0.7;
+  // Floating TV
+  G.add(box(0.6, 0.4, 0.035, MATS.matte_black, TV_X, 1.4, 0.025));
+  G.add(box(0.56, 0.36, 0.02, MATS.tv_screen, TV_X, 1.4, 0.04));
+  // Fold-down oak desk below TV (per photo 1753)
+  G.add(box(0.55, 0.028, 0.32, PALE_OAK, TV_X, 0.75, 0.18));
+  // bracket underneath
+  G.add(box(0.05, 0.22, 0.03, MATS.matte_black, TV_X, 0.62, 0.04));
+  // small step/stool (oak, per photo)
+  G.add(box(0.25, 0.4, 0.25, PALE_OAK, TV_X - 0.35, 0.2, 0.18));
+
+  // -------- BATHROOM ALCOVE (back-left, x:0..BW, z:D..D+BD) --------
+  // Shower on SOUTH side of alcove (nearest to main room opening); behind ribbed glass panel
+  // Glass panel separates shower from the rest of alcove AND from main room
+  // Main-room-side opening: at z=D, x∈[0, BW] is open (no wall) — but we have a ribbed glass swing door
+  const reededGlassMat = new THREE.MeshStandardMaterial({
+    color: 0xddead0, roughness: 0.45, metalness: 0, transparent: true, opacity: 0.55,
+    emissive: 0xe8efe0, emissiveIntensity: 0.02
+  });
+  const glass = new THREE.Mesh(new THREE.PlaneGeometry(BW - 0.04, H - 0.15), reededGlassMat);
+  glass.position.set(BW/2, (H - 0.15)/2 + 0.02, D - 0.005);
+  G.add(glass);
+  // Thin black frame on glass door
+  G.add(box(BW - 0.02, 0.02, 0.018, MATS.matte_black, BW/2, H - 0.13, D - 0.01));
+  G.add(box(0.015, H - 0.15, 0.018, MATS.matte_black, BW - 0.015, (H - 0.15)/2 + 0.02, D - 0.01));
+  // Small black handle on door
+  G.add(box(0.025, 0.08, 0.02, MATS.matte_black, BW - 0.18, 1.05, D - 0.018));
+  // Ribbed-glass suggestion: vertical thin dark lines on the panel
+  for (let k = 0; k < 10; k++) {
+    const gx = 0.08 + k * ((BW - 0.16) / 9);
+    G.add(box(0.002, H - 0.25, 0.003, new THREE.MeshStandardMaterial({ color: 0xbfd0b8, roughness: 0.6, transparent: true, opacity: 0.5 }),
+             gx, (H - 0.25)/2 + 0.02, D - 0.003));
+  }
+
+  // Shower head (matte black) on ceiling of alcove, near south end
+  const showerArm = box(0.025, 0.22, 0.025, MATS.matte_black, BW/2, H - 0.3, D + 0.15);
+  G.add(showerArm);
+  const rainHead = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 0.02, 28), MATS.matte_black);
+  rainHead.position.set(BW/2, H - 0.4, D + 0.15);
+  G.add(rainHead);
+  // Shower thermostatic column (on alcove right wall — x=BW, south end)
+  G.add(box(0.015, 0.8, 0.08, MATS.matte_black, BW - 0.012, 1.1, D + 0.12));
+  G.add(box(0.015, 0.06, 0.14, MATS.matte_black, BW - 0.012, 1.0, D + 0.1));
+  // Handshower wand
+  G.add(box(0.015, 0.25, 0.03, MATS.matte_black, BW - 0.025, 0.95, D + 0.22));
+
+  // Microcement shower curb
+  G.add(box(BW - 0.05, 0.025, 0.02, MATS.after_microcement, BW/2, 0.013, D + 0.3));
+
+  // Floating sink (middle of alcove, on left wall x=0, per photos)
+  G.add(box(0.08, 0.22, 0.28, MATS.after_wall, 0.04, 0.9, D + BD - 0.5));
+  // Mirror above sink
+  G.add(box(0.012, 0.42, 0.3, MATS.mirror, 0.015, 1.32, D + BD - 0.5));
+  // Tap
+  const bathTap = new THREE.Group();
+  bathTap.add(box(0.022, 0.18, 0.022, MATS.matte_black, 0, 0.09, 0));
+  bathTap.add(box(0.022, 0.022, 0.08, MATS.matte_black, 0, 0.18, 0.04));
+  bathTap.position.set(0.08, 0.94, D + BD - 0.52);
+  G.add(bathTap);
+
+  // Wall-hung WC (on right wall of alcove, at back, per plan "2 wc" = 1 wc)
+  G.add(box(0.34, 0.32, 0.5, MATS.after_wall, BW - 0.17, 0.42, D + BD - 0.28));
+  G.add(box(0.32, 0.02, 0.36, MATS.matte_black, BW - 0.17, 0.595, D + BD - 0.35));
+  // flush plate
+  G.add(box(0.14, 0.22, 0.008, MATS.matte_black, BW - 0.17, 1.05, D + BD - 0.004));
+  // recessed wall niche above toilet (microcement shelf) with towels
+  G.add(box(0.28, 0.03, 0.18, MATS.after_microcement, BW - 0.17, 1.35, D + BD - 0.2));
+  G.add(box(0.22, 0.14, 0.14, MATS.white_bedding, BW - 0.17, 1.43, D + BD - 0.2));
+  G.add(box(0.12, 0.08, 0.12, MATS.white_bedding, BW - 0.26, 1.58, D + BD - 0.22));
+
+  // VMC vent on alcove ceiling
+  G.add(box(0.14, 0.015, 0.14, MATS.matte_black, BW/2 + 0.1, H - 0.008, D + BD - 0.2));
+
+  // Ceiling spots (IP65) in alcove — small bright disks (visual only)
+  for (const [sx, sz] of [[BW/2, D + 0.35], [BW/2, D + BD - 0.25]]) {
+    const spot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.035, 20),
+      new THREE.MeshBasicMaterial({ color: 0xffeccf })
+    );
+    spot.rotation.x = Math.PI/2;
+    spot.position.set(sx, H - 0.01, sz);
+    G.add(spot);
+  }
+
+  // Ceiling spots in main room
+  for (const [sx, sz] of [[W - 0.6, 0.55], [W/2, 0.55], [KIT_X_CENTER + 0.15, 0.6]]) {
+    const spot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.035, 20),
+      new THREE.MeshBasicMaterial({ color: 0xffeccf })
+    );
+    spot.rotation.x = Math.PI/2;
+    spot.position.set(sx, H - 0.01, sz);
+    G.add(spot);
+  }
+
+}
+
+
+// ============================================================
+// HOTSPOT DATA (world positions, and linked DOM)
+// ============================================================
+
+// ============================================================
+// HOTSPOT DATA (i18n-aware)
+// ============================================================
+const _hs = window.__T ? window.__T.hotspots : null;
+const _t = window.__T || {};
+function _h(i, pos, bef, aft) {
+  const hs = _hs && _hs[i];
+  return { id: i+1, name: hs ? hs.name : '', zone: hs ? hs.zone : '',
+    pos, before: hs ? hs.bef : bef, after: hs ? hs.aft : aft };
+}
+const W_ref = W, D_ref = D, BW_ref = BW, BD_ref = BD;
+const hotspotsData = [
+  _h(0, [W_ref - 0.4, 0.9, 1.3],
+    'Crude black metal loft bed at 1.9m with exposed slats.',
+    'Custom oak alcove, cream-linen cushion back, LED cove.'),
+  _h(1, [0.35, 1.3, 0.7],
+    'No kitchen — bare plaster wall.',
+    'Matte-black cabinet with mirror back and induction hob.'),
+  _h(2, [0.35, 1.25, 2.0],
+    'No wardrobe — clothes on the floor.',
+    'Full-height oak wardrobe with mirror push-latch doors.'),
+  _h(3, [W_ref * 0.55, 0.05, D_ref * 0.5],
+    'Sticky navy-blue lino, scuffed and stained.',
+    'Light French oak planks along the long axis.'),
+  _h(4, [W_ref - 1.35, 0.3, 0.9],
+    'No hot-water tank in unit.',
+    'Water heater inside bed base, magnetic oak panel.'),
+  _h(5, [BW_ref/2, 1.1, D_ref + BD_ref/2],
+    'Dated tiles, peeling plaster, pedestal sink.',
+    'Microcement, rainshower, floating sink, wall-hung WC.'),
+  _h(6, [W_ref - 1.5, 0.35, 1.7],
+    'No in-unit laundry.',
+    'Full washer in bed carcass, round porthole access.'),
+];
+
+const hotspotEls = {};
+const list = document.getElementById('hotspot-list');
+hotspotsData.forEach(h => {
+  // 3D overlay element
+  const el = document.createElement('div');
+  el.className = 'hotspot';
+  el.textContent = String(h.id).padStart(2, '0');
+  document.getElementById('app').appendChild(el);
+  hotspotEls[h.id] = el;
+  el.addEventListener('mouseenter', () => showTooltip(h, el));
+  el.addEventListener('mouseleave', hideTooltip);
+  el.addEventListener('click', () => focusHotspot(h));
+
+  // side list
+  const li = document.createElement('div');
+  li.className = 'hotspot-item';
+  li.dataset.id = h.id;
+  li.innerHTML = `<span class="num">${String(h.id).padStart(2,'0')}</span><span class="nm">${h.name}</span><span class="ar">${h.zone}</span>`;
+  li.addEventListener('mouseenter', () => highlightHotspot(h.id, true));
+  li.addEventListener('mouseleave', () => highlightHotspot(h.id, false));
+  li.addEventListener('click', () => focusHotspot(h));
+  list.appendChild(li);
+});
+
+const tooltip = document.getElementById('tooltip');
+function showTooltip(h, el) {
+  const _lb = (_t.before||'Before'); const _la = (_t.after||'After'); tooltip.innerHTML = `
+    <h4>${h.name}</h4>
+    <div class="ba"><span class="before-txt">${_lb}</span><span class="sep">·</span><span class="after-txt">${_la}</span></div>
+    <p><span style="color:var(--before)">${_lb}:</span> ${h.before}</p>
+    <p style="margin-top:6px"><span style="color:var(--after)">${_la}:</span> ${h.after}</p>
+  `;
+  const r = el.getBoundingClientRect();
+  const ttW = 260;
+  const leftSide = r.left > window.innerWidth - 320;
+  tooltip.style.left = (leftSide ? r.left - ttW - 16 : r.right + 10) + 'px';
+  tooltip.style.top = (r.top + r.height/2) + 'px';
+  tooltip.classList.add('show');
+}
+function hideTooltip() { tooltip.classList.remove('show'); }
+
+function highlightHotspot(id, on) {
+  const el = hotspotEls[id]; if (!el) return;
+  el.classList.toggle('active', on);
+  const li = list.querySelector(`[data-id="${id}"]`);
+  if (li) li.classList.toggle('active', on);
+}
+
+function focusHotspot(h) {
+  // set morph to show after
+  const target = morph < 0.5 ? 1 : morph;
+  setMorph(target);
+  scrub.value = target * 1000;
+  updateDeckUi();
+  // move camera
+  const to = new THREE.Vector3(h.pos[0], h.pos[1], h.pos[2]);
+  const dir = new THREE.Vector3(h.pos[0] - W/2, 0.3, h.pos[2] - D/2).normalize();
+  const camTarget = new THREE.Vector3(
+    h.pos[0] + dir.x * 3.2,
+    Math.max(1.4, h.pos[1] + 1.0),
+    h.pos[2] + dir.z * 3.2
+  );
+  animateCamera(camTarget, to);
+}
+
+// ============================================================
+// MORPH + TIME + INTERACTION
+// ============================================================
+let morph = 0; // 0 = before, 1 = after
+let timeOfDay = 'day';
+
+function setMorph(v) {
+  morph = Math.max(0, Math.min(1, v));
+  const applyOpacity = (mat, target) => {
+    if (!mat) return;
+    mat.opacity = target;
+    // Only flag transparent when actually needed; keeps depth writes correct otherwise
+    mat.transparent = target < 0.995 || mat.userData?.alwaysTransparent === true;
+    mat.depthWrite = mat.transparent ? (target > 0.5) : true;
+  };
+  beforeGroup.traverse(obj => {
+    if (obj.material) {
+      if (Array.isArray(obj.material)) obj.material.forEach(m => applyOpacity(m, 1 - morph));
+      else applyOpacity(obj.material, 1 - morph);
+    }
+  });
+  afterGroup.traverse(obj => {
+    if (obj.material) {
+      if (Array.isArray(obj.material)) obj.material.forEach(m => applyOpacity(m, morph));
+      else applyOpacity(obj.material, morph);
+    }
+  });
+  beforeGroup.visible = morph < 0.995;
+  afterGroup.visible = morph > 0.005;
+
+  // LED intensities ramp up with after
+  bedLed.intensity = morph * intensityForTime('led');
+  if (afterGroup.userData.sconceGlow) afterGroup.userData.sconceGlow.intensity = morph * intensityForTime('led') * 0.8;
+  showerLight.intensity = morph * intensityForTime('led') * 0.4;
+  warmBounce.intensity = morph * intensityForTime('warm');
+
+  // MATS.tv_screen emissive
+  MATS.tv_screen.emissiveIntensity = morph * 0.6;
+  MATS.led_strip.emissiveIntensity = morph * 1.2;
+}
+
+function intensityForTime(kind) {
+  if (timeOfDay === 'day') {
+    if (kind === 'led') return 0.3;
+    if (kind === 'warm') return 0.2;
+    if (kind === 'sun') return 1.2;
+    if (kind === 'ambient') return 0.4;
+    if (kind === 'window') return 1.5;
+  }
+  if (timeOfDay === 'dusk') {
+    if (kind === 'led') return 1.3;
+    if (kind === 'warm') return 1.2;
+    if (kind === 'sun') return 0.35;
+    if (kind === 'ambient') return 0.18;
+    if (kind === 'window') return 0.5;
+  }
+  if (timeOfDay === 'night') {
+    if (kind === 'led') return 2.2;
+    if (kind === 'warm') return 2.0;
+    if (kind === 'sun') return 0.04;
+    if (kind === 'ambient') return 0.08;
+    if (kind === 'window') return 0.12;
+  }
+  return 0;
+}
+
+function setTime(t) {
+  timeOfDay = t;
+  if (t === 'day') {
+    scene.background = new THREE.Color(0x1a1814);
+    sun.color.setHex(0xfff2d8);
+    windowLight.color.setHex(0xfff6e0);
+    hemi.color.setHex(0xdfe8f2); hemi.groundColor.setHex(0x3a3228);
+  } else if (t === 'dusk') {
+    scene.background = new THREE.Color(0x161310);
+    sun.color.setHex(0xffb07a);
+    windowLight.color.setHex(0xffb280);
+    hemi.color.setHex(0xe8a888); hemi.groundColor.setHex(0x2a1f18);
+  } else {
+    scene.background = new THREE.Color(0x0a0a0c);
+    sun.color.setHex(0xa8b4d0);
+    windowLight.color.setHex(0x3a4a68);
+    hemi.color.setHex(0x2a3248); hemi.groundColor.setHex(0x0a0a0c);
+  }
+  sun.intensity = intensityForTime('sun');
+  windowLight.intensity = intensityForTime('window');
+  ambient.intensity = intensityForTime('ambient');
+  hemi.intensity = intensityForTime('ambient') + 0.3;
+
+  // retrigger LED states based on current morph
+  setMorph(morph);
+}
+
+// ============================================================
+// CAMERA ANIMATION
+// ============================================================
+let camAnim = null;
+function animateCamera(toPos, toTarget) {
+  const fromPos = camera.position.clone();
+  const fromTarget = controls.target.clone();
+  const start = performance.now();
+  const dur = 900;
+  camAnim = { fromPos, fromTarget, toPos, toTarget, start, dur };
+}
+function updateCamAnim() {
+  if (!camAnim) return;
+  const t = (performance.now() - camAnim.start) / camAnim.dur;
+  if (t >= 1) {
+    camera.position.copy(camAnim.toPos);
+    controls.target.copy(camAnim.toTarget);
+    camAnim = null; return;
+  }
+  const e = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2;
+  camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, e);
+  controls.target.lerpVectors(camAnim.fromTarget, camAnim.toTarget, e);
+}
+
+// ============================================================
+// DEPTH / HOTSPOT PROJECTION
+// ============================================================
+function project(worldPos) {
+  const v = worldPos.clone().project(camera);
+  return {
+    x: (v.x * 0.5 + 0.5) * wrap.clientWidth,
+    y: (-v.y * 0.5 + 0.5) * wrap.clientHeight,
+    z: v.z
+  };
+}
+
+function updateHotspots() {
+  hotspotsData.forEach(h => {
+    const el = hotspotEls[h.id];
+    const p = project(new THREE.Vector3(h.pos[0], h.pos[1], h.pos[2]));
+    if (p.z < 1 && p.x > -20 && p.x < wrap.clientWidth + 20 && p.y > -20 && p.y < wrap.clientHeight + 20) {
+      el.style.display = '';
+      el.style.left = p.x + 'px';
+      el.style.top = p.y + 'px';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+}
+
+// ============================================================
+// UI WIRING
+// ============================================================
+const scrub = document.getElementById('scrub');
+const readout = document.getElementById('readout');
+const pct = document.getElementById('pct');
+const lblBefore = document.getElementById('lbl-before');
+const lblAfter = document.getElementById('lbl-after');
+const progress = document.querySelector('.scrub-progress');
+
+function updateDeckUi() {
+  const v = morph;
+  const percent = Math.round(v * 100);
+  pct.innerHTML = `${percent}<span style="opacity:.5">%</span>`;
+  readout.style.left = Math.max(3, Math.min(97, v * 100)) + '%';
+  const _ro = (window.__T && window.__T.readout) ? window.__T.readout : ['Before|2024','Demolition|stripped back','Finishing|fit-out','After|2025'];
+  function _roHTML(s){ const p=s.split('|'); return p[0]+'<span>'+p[1]+'</span>'; }
+  if (v < 0.12) { readout.innerHTML = _roHTML(_ro[0]); }
+  else if (v < 0.5) { readout.innerHTML = _roHTML(_ro[1]); }
+  else if (v < 0.85) { readout.innerHTML = _roHTML(_ro[2]); }
+  else { readout.innerHTML = _roHTML(_ro[3]); }
+  lblBefore.classList.toggle('active-label', v < 0.5);
+  lblAfter.classList.toggle('active-label', v >= 0.5);
+}
+
+scrub.addEventListener('input', (e) => {
+  setMorph(+e.target.value / 1000);
+  updateDeckUi();
+});
+
+// Time segmented
+document.querySelectorAll('#time-seg button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('#time-seg button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    setTime(b.dataset.time);
+  });
+});
+
+// Play toggle — animate morph
+let playing = false;
+const btnPlay = document.getElementById('btn-play');
+btnPlay.addEventListener('click', () => {
+  playing = !playing;
+  btnPlay.classList.toggle('on', playing);
+  const _pp = (window.__T && window.__T.pause) || 'Pause';
+  const _pl = (window.__T && window.__T.play) || 'Play';
+  btnPlay.innerHTML = playing
+    ? `<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="0" width="3" height="10"/><rect x="6" y="0" width="3" height="10"/></svg> ${_pp}`
+    : `<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><path d="M1 0 L9 5 L1 10 Z"/></svg> ${_pl}`;
+});
+
+// Cutaway — raise the camera to reveal interior by making ceiling vanish
+let cutaway = false;
+const btnCut = document.getElementById('btn-cut');
+btnCut.addEventListener('click', () => {
+  cutaway = !cutaway;
+  btnCut.classList.toggle('on', cutaway);
+});
+
+// Reset view
+document.getElementById('btn-reset').addEventListener('click', () => {
+  animateCamera(initialCam.clone(), new THREE.Vector3(W/2, 1.1, D/2));
+});
+
+// ============================================================
+// RESIZE
+// ============================================================
+function onResize() {
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+
+// ============================================================
+// MAIN LOOP
+// ============================================================
+let lastT = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - lastT) / 1000);
+  lastT = now;
+  if (playing) {
+    let v = morph + dt * 0.25;
+    if (v > 1) v = 0;
+    setMorph(v);
+    scrub.value = v * 1000;
+    updateDeckUi();
+  }
+  // ceiling cutaway: reduce ceiling/beam opacity based on cam angle + toggle
+  const ceilingHide = cutaway ? 0 : 1;
+  // Apply ceiling hide to planes with normal pointing down
+  [beforeGroup, afterGroup].forEach(g => {
+    g.traverse(obj => {
+      if (!obj.material) return;
+      const m = Array.isArray(obj.material) ? obj.material[0] : obj.material;
+      const isCeil = obj.position.y >= H - 0.2 && obj.position.y <= H + 0.1;
+      if (isCeil) {
+        const base = (g === beforeGroup) ? (1 - morph) : morph;
+        const target = base * ceilingHide;
+        m.opacity = target;
+        m.transparent = target < 0.995;
+        m.depthWrite = !m.transparent;
+      }
+    });
+  });
+
+  controls.update();
+  updateCamAnim();
+  updateHotspots();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+
+// Init
+setTime('day');
+setMorph(0);
+updateDeckUi();
+onResize();
+requestAnimationFrame(loop);
+
+// Hide loader
+setTimeout(() => {
+  const l = document.getElementById('loader');
+  l.classList.add('hide');
+  setTimeout(() => l.style.display = 'none', 600);
+}, 350);
+
+
+  </script>
+</body>
+</html>
