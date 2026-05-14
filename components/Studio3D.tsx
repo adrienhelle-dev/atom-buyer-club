@@ -43,7 +43,7 @@ export default function Studio3D() {
       <style jsx>{`
         .studio-iframe-wrap {
           width: 100%;
-          height: clamp(520px, 80vh, 900px);
+          height: clamp(600px, 90vh, 1100px);
           position: relative;
         }
         @media (max-width: 900px) and (orientation: landscape) {

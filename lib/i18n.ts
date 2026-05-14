@@ -103,7 +103,7 @@ export const translations = {
     },
     portfolio: {
       label: "DEAL FLOW",
-      heading: "Projets disponibles & vendus",
+      heading: "Projets",
       surface: "Surface",
       floor: "Étage",
       fai: "Prix FAI",
@@ -264,7 +264,7 @@ export const translations = {
     },
     portfolio: {
       label: "DEAL FLOW",
-      heading: "Available & completed deals",
+      heading: "Projects",
       surface: "Surface",
       floor: "Floor",
       fai: "Asking price",

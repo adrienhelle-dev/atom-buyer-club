@@ -40,13 +40,13 @@ export default function Process() {
           <h2
             style={{
               fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(36px, 5vw, 56px)",
+              fontSize: "clamp(28px, 3.5vw, 46px)",
               fontWeight: 300,
               color: "#F5F2ED",
               margin: 0,
               letterSpacing: "-0.02em",
-              maxWidth: "560px",
               lineHeight: 1.15,
+              whiteSpace: "nowrap",
             }}
           >
             {tr.process.heading}

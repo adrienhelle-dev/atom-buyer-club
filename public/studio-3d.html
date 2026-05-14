@@ -90,17 +90,14 @@
       border-radius: 18px;
       padding: 18px 22px 20px;
     }
-    .deck-row {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
+    .deck-row { display: none; }
     .labels { display: flex; align-items: center; gap: 14px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); }
     .labels .active-label { color: var(--ink); font-weight: 500; }
-    .scrub-wrap { position: relative; height: 44px; display: flex; align-items: center; }
+    .scrub-wrap { position: relative; height: 60px; display: flex; align-items: center; }
     .scrub-track {
-      position: relative; width: 100%; height: 6px;
+      position: relative; width: 100%; height: 10px;
       background: linear-gradient(90deg, #3a4755 0%, #3a4755 50%, #8c6c47 50%, #8c6c47 100%);
-      border-radius: 6px; overflow: hidden;
+      border-radius: 10px; overflow: hidden;
     }
     .scrub-progress {
       position: absolute; left: 0; top: 0; bottom: 0;
@@ -111,29 +108,29 @@
     .scrub-tick { flex: 1; border-right: 1px solid rgba(255,255,255,.1); height: 3px; }
     .scrub-tick:last-child { border-right: 0; }
     .scrub-range {
-      position: absolute; inset: -14px 0; width: 100%;
+      position: absolute; inset: -20px 0; width: 100%;
       -webkit-appearance: none; appearance: none;
       background: transparent; outline: none; margin: 0; cursor: grab;
     }
     .scrub-range:active { cursor: grabbing; }
     .scrub-range::-webkit-slider-thumb {
       -webkit-appearance: none; appearance: none;
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: var(--ink); border: 3px solid var(--bg-2);
-      box-shadow: 0 4px 14px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.2); cursor: grab;
+      box-shadow: 0 4px 18px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.25); cursor: grab;
     }
     .scrub-range::-moz-range-thumb {
-      width: 28px; height: 28px; border-radius: 50%;
+      width: 44px; height: 44px; border-radius: 50%;
       background: var(--ink); border: 3px solid var(--bg-2);
-      box-shadow: 0 4px 14px rgba(0,0,0,.5); cursor: grab;
+      box-shadow: 0 4px 18px rgba(0,0,0,.6); cursor: grab;
     }
     .scrub-readout {
-      position: absolute; top: -28px; transform: translateX(-50%);
+      position: absolute; top: -30px; transform: translateX(-50%);
       font-family: 'Fraunces', serif; font-size: 15px;
       color: var(--ink); pointer-events: none;
       transition: left .05s linear; white-space: nowrap;
     }
-    .scrub-readout span { color: var(--ink-faint); font-size: 11px; margin-left: 4px; }
+    .scrub-readout span { display: none; }
     .deck-tools {
       display: flex; align-items: center; justify-content: space-between;
       margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); gap: 12px;
@@ -1749,7 +1746,7 @@ function updateDeckUi() {
   const v = morph;
   const percent = Math.round(v * 100);
   pct.innerHTML = `${percent}<span style="opacity:.5">%</span>`;
-  readout.style.left = Math.max(3, Math.min(97, v * 100)) + '%';
+  readout.style.left = Math.max(5, Math.min(90, v * 100)) + '%';
   const _ro = (window.__T && window.__T.readout) ? window.__T.readout : ['Before|2024','Demolition|stripped back','Finishing|fit-out','After|2025'];
   function _roHTML(s){ const p=s.split('|'); return p[0]+'<span>'+p[1]+'</span>'; }
   if (v < 0.12) { readout.innerHTML = _roHTML(_ro[0]); }
