@@ -366,8 +366,11 @@ export default function Portfolio() {
         {allCards.map((project, i) => {
           if (project.name === "__coming__") {
             return (
-              <div
+              <a
                 key="coming-soon"
+                href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="portfolio-card"
                 style={{
                   flexShrink: 0,
@@ -383,6 +386,17 @@ export default function Portfolio() {
                   minHeight: "520px",
                   background: "transparent",
                   textAlign: "center",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(26,26,26,0.4)";
+                  e.currentTarget.style.background = "rgba(26,26,26,0.03)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E8E3DB";
+                  e.currentTarget.style.background = "transparent";
                 }}
               >
                 <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1px solid #E8E3DB", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "20px", color: "rgba(26,26,26,0.3)" }}>
@@ -390,7 +404,7 @@ export default function Portfolio() {
                 </div>
                 <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 300, color: "rgba(26,26,26,0.4)", marginBottom: "8px" }}>{p.comingSoonTitle}</div>
                 <div style={{ fontSize: "13px", color: "rgba(26,26,26,0.3)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6 }}>{p.comingSoonText}</div>
-              </div>
+              </a>
             );
           }
           const proj = project as typeof projects[0];
