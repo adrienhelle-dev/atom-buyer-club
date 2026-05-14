@@ -75,7 +75,7 @@ export default function JoinClub() {
             {contacts.map((contact) => (
               <div key={contact.name} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: "14px", fontWeight: 500, color: "#F5F2ED", fontFamily: "'DM Sans', sans-serif", marginBottom: "4px" }}>{contact.name}</div>
-                <
+                <a
                   href={`mailto:${contact.email}`}
                   style={{ fontSize: "12px", color: "rgba(245,242,237,0.35)", fontFamily: "'DM Sans', sans-serif", textDecoration: "none", display: "block", marginTop: "2px", transition: "color 0.2s" }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = "#5C6BC0")}
