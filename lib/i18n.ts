@@ -125,7 +125,10 @@ export const translations = {
         { name: "Marc D.", role: "Cadre en finance", location: "Investi Paris 11e", quote: "Processus ultra-fluide, du sourcing à la première mensualité. Atom m'a évité des mois de recherche infructueuse." },
         { name: "Sophie L.", role: "Médecin libérale", location: "Investie Paris 16e", quote: "Le fait qu'Atom ne marge pas sur les travaux a été décisif. Transparence totale sur chaque poste de coût." },
         { name: "Thomas B.", role: "Entrepreneur", location: "Investi Paris 9e", quote: "Le loyer contractualisé couvre ma mensualité dès le premier mois. C'est exactement ce que je cherchais." },
-        { name: "Céline M.", role: "Consultante", location: "Investie Paris 17e", quote: "713 membres dans le club, c'est la preuve que le modèle fonctionne. J'ai rejoint sur recommandation et je ne regrette pas." },
+        { name: "Céline M.", role: "Consultante", location: "Investie Paris 17e", quote: "J'ai rejoint sur recommandation et je ne regrette pas. Le modèle est solide et l'équipe vraiment réactive." },
+        { name: "Caroline B.", role: "Investisseure", location: "Investie Paris 18e", quote: "Atom m'a accompagnée dans ma stratégie d'investissement à Paris en trouvant une perle de 10 m² au cœur de Montmartre. La rénovation a été parfaitement réalisée et dans un temps record. Tout mon entourage est bluffé de cette micro-surface ultra optimisée." },
+        { name: "Laurine B.", role: "Investisseure", location: "Investie Paris 9e", quote: "Atom a géré le sourcing et le design de mon studio. Un concept très intéressant, vrai gain de temps. Service efficace et réactif — indispensable pour des opérations rentables." },
+        { name: "Lassaad B.", role: "Investisseur", location: "Investi Paris 17e", quote: "Accompagnement complet et maîtrisé, des premières visites aux travaux en passant par le financement. Expérience fluide, claire et rassurante. Une vraie expertise sur les micro-surfaces parisiennes, avec un suivi sérieux et humain." },
       ],
     },
     faq: {
@@ -286,7 +289,10 @@ export const translations = {
         { name: "Marc D.", role: "Finance executive", location: "Invested Paris 11e", quote: "Ultra-smooth process from sourcing to the first mortgage payment. Atom saved me months of fruitless searching." },
         { name: "Sophie L.", role: "Independent doctor", location: "Invested Paris 16e", quote: "The fact that Atom takes no margin on renovation was decisive. Full transparency on every cost item." },
         { name: "Thomas B.", role: "Entrepreneur", location: "Invested Paris 9e", quote: "The contractual rent covers my mortgage from day one. That's exactly what I was looking for." },
-        { name: "Céline M.", role: "Consultant", location: "Invested Paris 17e", quote: "713 members in the club — proof the model works. I joined on a recommendation and have no regrets." },
+        { name: "Céline M.", role: "Consultant", location: "Invested Paris 17e", quote: "I joined on a recommendation and have no regrets. The model is solid and the team genuinely responsive." },
+        { name: "Caroline B.", role: "Investor", location: "Invested Paris 18e", quote: "Atom guided my investment strategy in Paris, finding a 10 m² gem in the heart of Montmartre. The renovation was perfectly executed and in record time. Everyone around me is blown away by this ultra-optimised micro-apartment." },
+        { name: "Laurine B.", role: "Investor", location: "Invested Paris 9e", quote: "Atom handled the sourcing and design of my studio. A great concept, real time-saver. Efficient and responsive service — essential for profitable investments." },
+        { name: "Lassaad B.", role: "Investor", location: "Invested Paris 17e", quote: "Complete and masterful support, from the first visits through renovation and financing. A smooth, clear and reassuring experience. Real expertise in Parisian micro-apartments, with serious and human follow-up." },
       ],
     },
     faq: {
