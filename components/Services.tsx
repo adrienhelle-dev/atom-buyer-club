@@ -42,7 +42,7 @@ export default function Services() {
           </h2>
         </motion.div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2px" }}>
+        <div className="services-grid">
           {s.items.map((service, i) => {
             const highlight = i === 1;
             return (
@@ -77,6 +77,21 @@ export default function Services() {
           })}
         </div>
       </div>
+
+      <style jsx>{`
+        .services-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 2px;
+        }
+        /* Tablette paysage & portrait + iPhone paysage → 1 colonne */
+        @media (max-width: 1024px) {
+          .services-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
