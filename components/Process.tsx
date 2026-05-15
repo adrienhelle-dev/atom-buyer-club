@@ -41,6 +41,7 @@ export default function Process() {
   return (
     <section
       id="processus"
+      className="section-main"
       style={{ padding: "120px 0", background: "#1A1A1A", overflow: "hidden" }}
     >
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 40px" }}>
@@ -213,37 +214,6 @@ export default function Process() {
           ))}
         </div>
 
-        {/* ── Bottom note ────────────────────────────────── */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0, margin: "300px" }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          style={{
-            marginTop: "48px",
-            padding: "24px 32px",
-            border: "1px solid rgba(245,242,237,0.1)",
-            borderRadius: "2px",
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            flexWrap: "wrap",
-          }}
-        >
-          <div style={{
-            width: "8px", height: "8px",
-            borderRadius: "50%", background: "#B8975A", flexShrink: 0,
-          }} />
-          <p style={{
-            fontSize: "14px", color: "rgba(245,242,237,0.6)",
-            margin: 0, fontFamily: "'DM Sans', sans-serif", lineHeight: 1.6,
-          }}>
-            <strong style={{ color: "#F5F2ED", fontWeight: 500 }}>
-              {tr.process.noteBold}
-            </strong>{" "}
-            {tr.process.noteDetail}
-          </p>
-        </motion.div>
       </div>
 
       <style jsx>{`

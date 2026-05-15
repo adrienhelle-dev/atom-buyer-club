@@ -27,7 +27,7 @@ export default function Services() {
   const s = tr.services;
 
   return (
-    <section id="services" style={{ padding: "120px 24px", background: "#F5F2ED" }}>
+    <section id="services" className="section-main" style={{ padding: "120px 24px", background: "#F5F2ED" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
         <motion.div
           initial={{ opacity: 0, y: 24 }}

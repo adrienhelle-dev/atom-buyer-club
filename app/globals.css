@@ -46,6 +46,22 @@ body {
   outline-offset: 2px;
 }
 
+/* ── Responsive section vertical padding ─────────────────
+   All main sections use padding: 120px inline.
+   !important is required to override inline styles on mobile. */
+@media (max-width: 768px) {
+  .section-main {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+}
+@media (min-width: 769px) and (max-width: 1024px) {
+  .section-main {
+    padding-top: 88px !important;
+    padding-bottom: 88px !important;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

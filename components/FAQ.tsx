@@ -59,7 +59,7 @@ export default function FAQ() {
   const [bookingOpen, setBookingOpen] = useState(false);
 
   return (
-    <section id="faq" style={{ padding: "120px 24px", background: "#F5F2ED" }}>
+    <section id="faq" className="section-main" style={{ padding: "120px 24px", background: "#F5F2ED" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
         {/* Mobile header — shown only on small screens */}
         <div className="faq-mobile-header">

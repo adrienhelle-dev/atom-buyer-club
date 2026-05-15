@@ -20,7 +20,7 @@ export default function Testimonials() {
   const t = tr.testimonials;
 
   return (
-    <section style={{ padding: "120px 24px", background: "#1A1A1A", overflow: "hidden" }}>
+    <section className="section-main" style={{ padding: "120px 24px", background: "#1A1A1A", overflow: "hidden" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
 
         {/* Header */}

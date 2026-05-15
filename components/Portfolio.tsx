@@ -296,7 +296,7 @@ export default function Portfolio() {
   ];
 
   return (
-    <section id="realisations" style={{ padding: "120px 0", background: "#F5F2ED", overflow: "hidden" }}>
+    <section id="realisations" className="section-main" style={{ padding: "120px 0", background: "#F5F2ED", overflow: "hidden" }}>
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "0 24px" }}>
         {/* Header row */}
         <motion.div
