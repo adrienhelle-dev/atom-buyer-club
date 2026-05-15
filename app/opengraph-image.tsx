@@ -1,31 +1,18 @@
 import { MEMBER_COUNT } from "@/lib/config";
 import { ImageResponse } from "next/og";
+import { readFileSync } from "fs";
+import { join } from "path";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function OGImage() {
-  // Fetch Cormorant Garamond Light (300) for the "atom" wordmark
-  let cormorantFont: ArrayBuffer | null = null;
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(
-      "https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjornFLsS6V7w.woff2",
-      { signal: controller.signal }
-    );
-    clearTimeout(timeout);
-    if (res.ok) {
-      const buf = await res.arrayBuffer();
-      // Validate WOFF2 magic bytes: "wOF2" = 0x77 0x4F 0x46 0x32
-      const magic = new Uint8Array(buf.slice(0, 4));
-      if (magic[0] === 0x77 && magic[1] === 0x4f && magic[2] === 0x46 && magic[3] === 0x32) {
-        cormorantFont = buf;
-      }
-    }
-  } catch {
-    cormorantFont = null;
-  }
+  // Load Cormorant Garamond Light from local file (bundled in repo)
+  // This avoids any network dependency at build/render time
+  // Satori (next/og engine) requires TTF — WOFF2 is not supported
+  const cormorantFont: ArrayBuffer = readFileSync(
+    join(process.cwd(), "app/fonts/CormorantGaramond-Light.ttf")
+  ).buffer as ArrayBuffer;
 
   return new ImageResponse(
     (
@@ -58,7 +45,7 @@ export default async function OGImage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <span
             style={{
-              fontFamily: cormorantFont ? "Cormorant" : "Georgia, serif",
+              fontFamily: "Cormorant",
               fontSize: 64,
               fontWeight: 300,
               color: "#EDEEE8",
@@ -86,7 +73,7 @@ export default async function OGImage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <span
             style={{
-              fontFamily: cormorantFont ? "Cormorant" : "Georgia, serif",
+              fontFamily: "Cormorant",
               fontSize: 56,
               fontWeight: 300,
               color: "#F5F2ED",
@@ -115,7 +102,7 @@ export default async function OGImage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <span
               style={{
-                fontFamily: cormorantFont ? "Cormorant" : "Georgia, serif",
+                fontFamily: "Cormorant",
                 fontSize: 48,
                 fontWeight: 300,
                 color: "#B8975A",
@@ -140,7 +127,7 @@ export default async function OGImage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <span
               style={{
-                fontFamily: cormorantFont ? "Cormorant" : "Georgia, serif",
+                fontFamily: "Cormorant",
                 fontSize: 48,
                 fontWeight: 300,
                 color: "#B8975A",
@@ -165,7 +152,7 @@ export default async function OGImage() {
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             <span
               style={{
-                fontFamily: cormorantFont ? "Cormorant" : "Georgia, serif",
+                fontFamily: "Cormorant",
                 fontSize: 48,
                 fontWeight: 300,
                 color: "#B8975A",
@@ -205,16 +192,14 @@ export default async function OGImage() {
     ),
     {
       ...size,
-      fonts: cormorantFont
-        ? [
-            {
-              name: "Cormorant",
-              data: cormorantFont,
-              style: "normal",
-              weight: 300,
-            },
-          ]
-        : [],
+      fonts: [
+        {
+          name: "Cormorant",
+          data: cormorantFont,
+          style: "normal",
+          weight: 300,
+        },
+      ],
     }
   );
 }
