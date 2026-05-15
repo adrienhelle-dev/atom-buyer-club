@@ -69,7 +69,7 @@ export const translations = {
         { number: "08", title: "Mise en location", description: "Mise en exploitation selon le mode de gestion choisi" },
       ],
       noteBold: "Durée des travaux : 3 à 4 mois",
-      noteDetail: "selon les finitions choisies. Rétractation possible sans frais jusqu'à 10 jours après compromis.",
+      noteDetail: "selon les finitions choisies.",
     },
     financial: {
       label: "EXEMPLE FINANCIER",
@@ -233,7 +233,7 @@ export const translations = {
         { number: "08", title: "Rental launch", description: "Move-in according to the chosen management model" },
       ],
       noteBold: "Construction duration: 3 to 4 months",
-      noteDetail: "depending on the finishes chosen. Withdrawal possible at no cost up to 10 days after preliminary contract.",
+      noteDetail: "depending on the finishes chosen.",
     },
     financial: {
       label: "FINANCIAL EXAMPLE",
