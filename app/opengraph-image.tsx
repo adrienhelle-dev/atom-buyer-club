@@ -9,12 +9,20 @@ export default async function OGImage() {
   let cormorantFont: ArrayBuffer | null = null;
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
-    cormorantFont = await fetch(
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const res = await fetch(
       "https://fonts.gstatic.com/s/cormorantgaramond/v22/co3WmX5slCNuHLi8bLeY9MK7whWMhyjornFLsS6V7w.woff2",
       { signal: controller.signal }
-    ).then((r) => r.arrayBuffer());
+    );
     clearTimeout(timeout);
+    if (res.ok) {
+      const buf = await res.arrayBuffer();
+      // Validate WOFF2 magic bytes: "wOF2" = 0x77 0x4F 0x46 0x32
+      const magic = new Uint8Array(buf.slice(0, 4));
+      if (magic[0] === 0x77 && magic[1] === 0x4f && magic[2] === 0x46 && magic[3] === 0x32) {
+        cormorantFont = buf;
+      }
+    }
   } catch {
     cormorantFont = null;
   }
