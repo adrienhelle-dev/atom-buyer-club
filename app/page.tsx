@@ -11,6 +11,7 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import JoinClub from "@/components/JoinClub";
 import Footer from "@/components/Footer";
+import VoiceAgentLoader from "@/components/VoiceAgentLoader";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
         <FAQ />
         <JoinClub />
         <Footer />
+        <VoiceAgentLoader />
       </main>
     </ClientWrapper>
   );
