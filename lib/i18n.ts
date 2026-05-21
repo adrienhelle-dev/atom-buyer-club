@@ -150,7 +150,9 @@ export const translations = {
     join: {
       label: "REJOINDRE",
       headline: (count: string) => `${count} investisseurs ont déjà rejoint Atom.`,
-      subtitle: "Recevez nos prochaines opportunités en avant-première.",
+      subtitle: "Décrivez votre recherche et recevez nos prochaines opportunités en avant-première.",
+      ctaPrimary: "Déposer ma recherche",
+      ctaSecondary: "Rejoindre le groupe WhatsApp",
       cta: "Rejoindre le groupe WhatsApp",
       teamLabel: "OU CONTACTEZ L'ÉQUIPE DIRECTEMENT",
       bookSlot: "Réserver un créneau",
@@ -313,7 +315,9 @@ export const translations = {
     join: {
       label: "JOIN",
       headline: (count: string) => `${count} investors have already joined Atom.`,
-      subtitle: "Be the first to receive our next investment opportunities.",
+      subtitle: "Tell us what you're looking for and receive our next opportunities first.",
+      ctaPrimary: "Submit my search",
+      ctaSecondary: "Join the WhatsApp group",
       cta: "Join the WhatsApp group",
       teamLabel: "OR CONTACT THE TEAM DIRECTLY",
       bookSlot: "Book a slot",

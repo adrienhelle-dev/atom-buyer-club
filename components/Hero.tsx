@@ -1,5 +1,5 @@
 "use client";
-import { MEMBER_COUNT } from "@/lib/config";
+import { MEMBER_COUNT, JOIN_LANDING_URL } from "@/lib/config";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -86,7 +86,7 @@ export default function Hero() {
 
           <motion.div variants={item} style={{ display: "flex", gap: "16px", flexWrap: "wrap", marginBottom: "72px" }}>
             <a
-              href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
+              href={JOIN_LANDING_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "16px 32px", background: "#5C6BC0", color: "#FFFFFF", borderRadius: "2px", textDecoration: "none", fontSize: "14px", fontWeight: "500", letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s, transform 0.2s" }}

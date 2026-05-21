@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
+import { JOIN_LANDING_URL } from "@/lib/config";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -142,7 +143,7 @@ export default function Navbar() {
           </a>
 
           <a
-            href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
+            href={JOIN_LANDING_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -259,7 +260,7 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
+            href={JOIN_LANDING_URL}
             target="_blank"
             rel="noopener noreferrer"
             style={{
