@@ -380,7 +380,7 @@ export default function Portfolio() {
             return (
               <a
                 key="coming-soon"
-                href={PROJECTS_URL}
+                href={JOIN_LANDING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="portfolio-card"
@@ -470,14 +470,14 @@ export default function Portfolio() {
               {/* CTA */}
               {isAvailable ? (
                 <a
-                  href={PROJECTS_URL}
+                  href={JOIN_LANDING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", margin: "0 28px 28px", padding: "13px", background: "#5C6BC0", color: "#F5F2ED", textDecoration: "none", borderRadius: "2px", fontSize: "13px", fontWeight: 500, letterSpacing: "0.05em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#4a5ab8")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "#5C6BC0")}
                 >
-                  {lang === "fr" ? "Voir ce projet en détail" : "View project details"}
+                  {lang === "fr" ? "Accéder à ce projet" : "Access this project"}
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
               ) : (
