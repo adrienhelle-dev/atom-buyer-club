@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
-import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
+import { JOIN_LANDING_URL, SHOWROOM_URL, PROJECTS_URL } from "@/lib/config";
 
 const projects = [
   // ── Disponible ──────────────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ export default function Portfolio() {
             return (
               <a
                 key="coming-soon"
-                href={JOIN_LANDING_URL}
+                href={PROJECTS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="portfolio-card"
@@ -470,14 +470,14 @@ export default function Portfolio() {
               {/* CTA */}
               {isAvailable ? (
                 <a
-                  href={JOIN_LANDING_URL}
+                  href={PROJECTS_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", margin: "0 28px 28px", padding: "13px", background: "#5C6BC0", color: "#F5F2ED", textDecoration: "none", borderRadius: "2px", fontSize: "13px", fontWeight: 500, letterSpacing: "0.05em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#4a5ab8")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "#5C6BC0")}
                 >
-                  {lang === "fr" ? "Accéder à ce projet" : "Access this project"}
+                  {lang === "fr" ? "Voir ce projet en détail" : "View project details"}
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </a>
               ) : (

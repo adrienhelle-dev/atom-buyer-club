@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atom Buyers Club — Schéma des CTAs</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #F7F4EF;
+    color: #1A1A1A;
+    padding: 48px 32px 80px;
+    min-height: 100vh;
+  }
+
+  .page-header { text-align: center; margin-bottom: 56px; }
+  .page-header .brand { font-size: 11px; letter-spacing: 0.18em; color: #B8975A; text-transform: uppercase; margin-bottom: 10px; }
+  .page-header h1 { font-size: 28px; font-weight: 300; color: #1A1A1A; letter-spacing: -0.01em; }
+  .page-header p { margin-top: 8px; font-size: 14px; color: #888; }
+
+  .diagram { max-width: 1100px; margin: 0 auto; }
+
+  .site-box {
+    background: #1A1A1A; color: #F5F2ED; border-radius: 6px;
+    padding: 20px 28px; display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px; width: fit-content;
+  }
+  .site-box .dot { width: 8px; height: 8px; border-radius: 50%; background: #B8975A; flex-shrink: 0; }
+  .site-box .url { font-size: 13px; color: rgba(245,242,237,0.5); margin-top: 2px; }
+  .site-box .name { font-size: 16px; font-weight: 600; }
+
+  .sections-col {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-left: 32px; border-left: 2px solid #E0DAD2;
+    padding-left: 32px; margin-bottom: 48px;
+  }
+
+  .section-row { display: flex; align-items: flex-start; gap: 0; }
+
+  .section-label {
+    background: #fff; border: 1px solid #E0DAD2; border-radius: 6px;
+    padding: 12px 20px; min-width: 210px; max-width: 210px;
+  }
+  .section-label .tag { font-size: 9px; letter-spacing: 0.12em; color: #B8975A; text-transform: uppercase; margin-bottom: 4px; }
+  .section-label .title { font-size: 14px; font-weight: 600; color: #1A1A1A; }
+
+  .ctas-list { display: flex; flex-direction: column; gap: 6px; padding-left: 24px; flex: 1; }
+
+  .cta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .connector { width: 28px; height: 1px; background: #D0CAC0; flex-shrink: 0; }
+
+  .cta-chip {
+    font-size: 12px; font-weight: 500; padding: 7px 14px;
+    border-radius: 100px; white-space: nowrap; border: 1px solid transparent;
+  }
+  .cta-chip.scroll { background: #F0EDE8; color: #888; border-color: #E0DAD2; font-style: italic; font-weight: 400; }
+
+  .arrow { font-size: 15px; color: #C8C2B8; flex-shrink: 0; }
+
+  .dest-chip { font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 100px; white-space: nowrap; }
+  .dest-form    { background: #EEF0FB; color: #3D4FAB; border: 1.5px solid #5C6BC0; }
+  .dest-showroom{ background: #FDF6EC; color: #9A6C1A; border: 1.5px solid #B8975A; }
+  .dest-projects{ background: #F0FBF4; color: #1A6640; border: 1.5px solid #2E9E5B; }
+  .dest-wa      { background: #EDFBF1; color: #1A7A38; border: 1.5px solid #25D366; }
+  .dest-internal{ background: #F0EDE8; color: #888; border: 1.5px solid #D0CAC0; }
+
+  .legend { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .legend-card { border-radius: 8px; padding: 18px 20px; border: 1.5px solid; }
+  .legend-card.form     { background: #EEF0FB; border-color: #5C6BC0; }
+  .legend-card.projects { background: #F0FBF4; border-color: #2E9E5B; }
+  .legend-card.showroom { background: #FDF6EC; border-color: #B8975A; }
+  .legend-card.wa       { background: #EDFBF1; border-color: #25D366; }
+
+  .legend-card .l-icon  { font-size: 20px; margin-bottom: 10px; }
+  .legend-card .l-title { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .legend-card.form     .l-title { color: #3D4FAB; }
+  .legend-card.projects .l-title { color: #1A6640; }
+  .legend-card.showroom .l-title { color: #9A6C1A; }
+  .legend-card.wa       .l-title { color: #1A7A38; }
+  .legend-card .l-url   { font-size: 10px; letter-spacing: 0.05em; opacity: 0.55; margin-bottom: 10px; font-family: monospace; }
+  .legend-card .l-desc  { font-size: 11px; color: #555; line-height: 1.6; }
+
+  .divider { max-width: 1100px; margin: 40px auto; border: none; border-top: 1px solid #E0DAD2; }
+  .footer-note { text-align: center; font-size: 11px; color: #AAA; margin-top: 32px; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="brand">Atom Buyers Club</div>
+  <h1>Schéma des redirections CTAs</h1>
+  <p>Comment le site principal oriente les visiteurs — Mai 2026</p>
+</div>
+
+<div class="diagram">
+
+  <div class="site-box">
+    <div class="dot"></div>
+    <div>
+      <div class="name">atombuyersclub.fr</div>
+      <div class="url">Site vitrine principal</div>
+    </div>
+  </div>
+
+  <div class="sections-col">
+
+    <!-- Navbar -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Navigation</div>
+        <div class="title">Navbar</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#EEF0FB;color:#3D4FAB;border-color:#5C6BC0">"Rejoindre"</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-form">📋 Formulaire lead</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Section 1</div>
+        <div class="title">Hero</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#EEF0FB;color:#3D4FAB;border-color:#5C6BC0">"Rejoindre le club" — CTA principal</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-form">📋 Formulaire lead</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#F0FBF4;color:#1A6640;border-color:#2E9E5B">"Découvrir nos projets" — CTA secondaire</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-projects">🏠 Projets disponibles</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Section 5</div>
+        <div class="title">Portfolio / Deal Flow</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#F0FBF4;color:#1A6640;border-color:#2E9E5B">"Voir ce projet en détail" — cartes DISPONIBLES (×3)</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-projects">🏠 Projets disponibles</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#FDF6EC;color:#9A6C1A;border-color:#B8975A">"Projet similaire disponible" — cartes VENDUES (×13)</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-form">📋 Formulaire lead</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#FDF6EC;color:#9A6C1A;border-color:#B8975A">"Voir toutes nos réalisations" — lien header</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-showroom">🖼️ Showroom</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#F0FBF4;color:#1A6640;border-color:#2E9E5B">Carte "+" — prochains deals</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-projects">🏠 Projets disponibles</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Réalisations -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Section 8 — Nouveau</div>
+        <div class="title">Réalisations</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#EEF0FB;color:#3D4FAB;border-color:#5C6BC0">"Investir dans un projet similaire" (×3)</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-form">📋 Formulaire lead</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#FDF6EC;color:#9A6C1A;border-color:#B8975A">"Voir toutes nos réalisations"</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-showroom">🖼️ Showroom</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JoinClub -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Section 10 — Bas de page</div>
+        <div class="title">Section Rejoindre</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#EEF0FB;color:#3D4FAB;border-color:#5C6BC0">"Accéder aux prochains deals" — CTA principal</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-form">📋 Formulaire lead</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip" style="background:#EDFBF1;color:#1A7A38;border-color:#25D366">"Rejoindre le groupe WhatsApp" — CTA secondaire</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-wa">💬 Groupe WhatsApp</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="section-row">
+      <div class="section-label">
+        <div class="tag">Footer</div>
+        <div class="title">Pied de page</div>
+      </div>
+      <div class="ctas-list">
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip scroll">Icône WhatsApp</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-wa">💬 Groupe WhatsApp</div>
+        </div>
+        <div class="cta-row">
+          <div class="connector"></div>
+          <div class="cta-chip scroll">Icône Instagram</div>
+          <div class="arrow">→</div>
+          <div class="dest-chip dest-internal">📸 @atom.living</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-card form">
+      <div class="l-icon">📋</div>
+      <div class="l-title">Formulaire lead</div>
+      <div class="l-url">join.atombuyerclub.fr</div>
+      <div class="l-desc">
+        Formulaire 3 étapes :<br>
+        1. Infos personnelles (nom, email, tél.)<br>
+        2. Détails du projet (zone, timing)<br>
+        3. Financement (capacité d'emprunt)<br><br>
+        <strong>→ L'équipe recontacte sous 24h</strong>
+      </div>
+    </div>
+    <div class="legend-card projects">
+      <div class="l-icon">🏠</div>
+      <div class="l-title">Projets disponibles</div>
+      <div class="l-url">join.atombuyerclub.fr/projets</div>
+      <div class="l-desc">
+        Liste des projets en cours<br>
+        disponibles à l'achat<br><br>
+        Fiches détaillées avec métriques,<br>
+        photos et formulaire de contact<br><br>
+        <strong>→ Découverte avant décision</strong>
+      </div>
+    </div>
+    <div class="legend-card showroom">
+      <div class="l-icon">🖼️</div>
+      <div class="l-title">Showroom</div>
+      <div class="l-url">join.atombuyerclub.fr/showroom</div>
+      <div class="l-desc">
+        Galerie des réalisations terminées :<br>
+        avant/après, métriques, statut<br><br>
+        Formulaire de contact intégré<br><br>
+        <strong>→ Preuve sociale + conversion</strong>
+      </div>
+    </div>
+    <div class="legend-card wa">
+      <div class="l-icon">💬</div>
+      <div class="l-title">Groupe WhatsApp</div>
+      <div class="l-url">chat.whatsapp.com/…</div>
+      <div class="l-desc">
+        Groupe privé d'investisseurs<br><br>
+        Nouvelles opportunités en temps réel,
+        actualités du club, échanges entre membres<br><br>
+        <strong>→ Communauté + deal flow live</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  Atom Buyers Club — atombuyersclub.fr — Schéma interne Mai 2026
+</div>
+
+</body>
+</html>
