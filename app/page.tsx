@@ -7,6 +7,7 @@ import FinancialExample from "@/components/FinancialExample";
 import Portfolio from "@/components/Portfolio";
 import Studio3D from "@/components/Studio3D";
 import PhotoCarousel from "@/components/PhotoCarousel";
+import Realisations from "@/components/Realisations";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import JoinClub from "@/components/JoinClub";
@@ -23,6 +24,7 @@ export default function Home() {
         <Portfolio />
         <Studio3D />
         <PhotoCarousel />
+        <Realisations />
         <Testimonials />
         <FAQ />
         <JoinClub />

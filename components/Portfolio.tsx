@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
+import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
 
 const projects = [
   // ── Disponible ──────────────────────────────────────────────────────────────
@@ -261,7 +262,7 @@ function StatRow({ label, value, highlight }: StatRowProps) {
 }
 
 export default function Portfolio() {
-  const { tr } = useLanguage();
+  const { tr, lang } = useLanguage();
   const p = tr.portfolio;
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
@@ -310,9 +311,20 @@ export default function Portfolio() {
             <span style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", display: "block", marginBottom: "16px" }}>
               {p.label}
             </span>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 300, color: "#1A1A1A", margin: 0, letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 5vw, 56px)", fontWeight: 300, color: "#1A1A1A", margin: "0 0 16px", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
               {p.heading}
             </h2>
+            <a
+              href={SHOWROOM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", textDecoration: "none", letterSpacing: "0.03em", transition: "gap 0.2s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.gap = "10px")}
+              onMouseLeave={(e) => (e.currentTarget.style.gap = "6px")}
+            >
+              {lang === "fr" ? "Voir toutes nos réalisations" : "See all our projects"}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </a>
           </div>
           {/* Nav arrows */}
           <div style={{ display: "flex", gap: "8px" }}>
@@ -368,7 +380,7 @@ export default function Portfolio() {
             return (
               <a
                 key="coming-soon"
-                href="https://chat.whatsapp.com/FgUjjDMT6ofKptPEHBxocp?mode=gi_t"
+                href={JOIN_LANDING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="portfolio-card"
@@ -444,7 +456,7 @@ export default function Portfolio() {
                 </div>
               </div>
               {/* Stats */}
-              <div style={{ padding: "28px 28px 32px" }}>
+              <div style={{ padding: "28px 28px 16px" }}>
                 <StatRow label={p.surface} value={proj.surface} />
                 <StatRow label={p.floor} value={proj.floor} />
                 <StatRow label={p.fai} value={proj.fai} />
@@ -455,6 +467,32 @@ export default function Portfolio() {
                 <StatRow label={p.rendement} value={proj.rendement} />
                 <StatRow label={p.metro} value={proj.metro} />
               </div>
+              {/* CTA */}
+              {isAvailable ? (
+                <a
+                  href={JOIN_LANDING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", margin: "0 28px 28px", padding: "13px", background: "#5C6BC0", color: "#F5F2ED", textDecoration: "none", borderRadius: "2px", fontSize: "13px", fontWeight: 500, letterSpacing: "0.05em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#4a5ab8")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#5C6BC0")}
+                >
+                  {lang === "fr" ? "Accéder à ce projet" : "Access this project"}
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </a>
+              ) : (
+                <a
+                  href={JOIN_LANDING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "14px 28px 20px", borderTop: "1px solid rgba(245,242,237,0.08)", color: "#B8975A", textDecoration: "none", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.07em", fontWeight: 400, transition: "color 0.2s, background 0.2s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = "#F5F2ED"; e.currentTarget.style.background = "rgba(245,242,237,0.04)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = "#B8975A"; e.currentTarget.style.background = "transparent"; }}
+                >
+                  {lang === "fr" ? "Projet similaire disponible" : "Similar project available"}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </a>
+              )}
             </motion.div>
           );
         })}
