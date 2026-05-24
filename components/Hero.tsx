@@ -1,5 +1,5 @@
 "use client";
-import { MEMBER_COUNT, JOIN_LANDING_URL } from "@/lib/config";
+import { MEMBER_COUNT, JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -97,7 +97,7 @@ export default function Hero() {
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </a>
             <a
-              href={JOIN_LANDING_URL}
+              href={SHOWROOM_URL}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "16px 32px", background: "transparent", color: "#F5F2ED", border: "1px solid rgba(245,242,237,0.3)", borderRadius: "2px", textDecoration: "none", fontSize: "14px", fontWeight: "400", letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "border-color 0.2s, background 0.2s" }}
