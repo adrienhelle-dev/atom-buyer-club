@@ -181,7 +181,7 @@ export default function AssetDetailClient({ asset, monthly }: Props) {
   }, [asset, perf, router])
 
   // Auto-save debounce 10s
-  const autoSaveTimer = useRef<ReturnType<typeof setTimeout>>()
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => {
     if (dirtyFields.size === 0) return
     clearTimeout(autoSaveTimer.current)
