@@ -14,6 +14,14 @@
   --accent: #5C6BC0;
   --gold: #B8975A;
   --border: #E8E3DB;
+  /* Admin dark theme */
+  --bg: #0f0e0c;
+  --bg2: #161512;
+  --bg3: #1e1d1a;
+  --admin-border: #2c2b27;
+  --dim: #7a7874;
+  --green: #4caf7d;
+  --red: #d95e5e;
 }
 
 * {
