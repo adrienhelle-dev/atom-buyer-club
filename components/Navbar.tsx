@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
-import { JOIN_LANDING_URL } from "@/lib/config";
+import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -259,6 +259,27 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+          <a
+            href={SHOWROOM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              textDecoration: "none",
+              color: "#B8975A",
+              fontSize: "18px",
+              fontWeight: "400",
+              fontFamily: "'Cormorant Garamond', serif",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            {lang === "fr" ? "Nos réalisations" : "Our projects"}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ marginTop: "2px" }}>
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
           <a
             href={JOIN_LANDING_URL}
             target="_blank"
