@@ -81,3 +81,44 @@ body {
   background: var(--border);
   border-radius: 3px;
 }
+
+/* ── Admin Assets — Responsive ───────────────────────────── */
+.ap-page { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 768px)  { .ap-page { padding: 16px; } }
+@media (max-width: 1024px) and (min-width: 769px) { .ap-page { padding: 20px 24px; } }
+
+/* KPI strip */
+.ap-kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+@media (max-width: 900px)  { .ap-kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px)  { .ap-kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+
+/* Segment cards */
+.ap-seg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+@media (max-width: 900px)  { .ap-seg-grid { grid-template-columns: 1fr; } }
+
+/* Segment inner metrics */
+.ap-seg-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 16px; margin-top: 14px; }
+@media (max-width: 480px)  { .ap-seg-metrics { grid-template-columns: repeat(2, 1fr); } }
+
+/* Asset table — desktop only */
+.ap-table      { display: block; }
+.ap-cards-list { display: none; }
+@media (max-width: 768px) {
+  .ap-table      { display: none; }
+  .ap-cards-list { display: flex; flex-direction: column; gap: 8px; }
+}
+
+/* Table row grid */
+.ap-row { display: grid; grid-template-columns: 1fr 76px 108px 120px 100px 28px; gap: 0 8px; padding: 14px 16px; align-items: center; }
+@media (max-width: 1100px) { .ap-row { grid-template-columns: 1fr 76px 108px 100px 28px; } .ap-col-rent { display: none; } }
+
+/* Asset card (mobile) */
+.ap-card { background: #161512; border: 1px solid #2c2b27; border-radius: 10px; padding: 14px; display: flex; justify-content: space-between; align-items: flex-start; text-decoration: none; }
+.ap-card:active { background: #1e1d1a; }
+
+/* Nav tabs filter */
+.ap-filters { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+
+/* Hover states */
+.ap-asset-row:hover { background: rgba(255,255,255,.025) !important; }
+.ap-card:hover { background: rgba(255,255,255,.025) !important; }

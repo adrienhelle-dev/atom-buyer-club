@@ -37,6 +37,7 @@ export function getPasswordForEmail(email: string): string {
 
 export function getRoleForEmail(email: string): AdminRole {
   if (PROPERTY_MANAGERS_EMAILS.includes(email)) return 'property_manager'
+  if (VIEWER_EMAILS.includes(email)) return 'viewer'
   if (PROJECTS_ONLY_EMAILS.includes(email)) return 'projects'
   return 'admin'
 }
