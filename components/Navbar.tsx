@@ -243,7 +243,7 @@ export default function Navbar() {
             gap: "20px",
           }}
         >
-          {navLinks.map((link) => (
+          {navLinks.slice(0, 3).map((link) => (
             <a
               key={link.label}
               href={link.href}
@@ -266,20 +266,30 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
             style={{
               textDecoration: "none",
-              color: "#B8975A",
+              color: "#1A1A1A",
               fontSize: "18px",
               fontWeight: "400",
               fontFamily: "'Cormorant Garamond', serif",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
             }}
           >
             {lang === "fr" ? "Nos réalisations" : "Our projects"}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ marginTop: "2px" }}>
-              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
           </a>
+          {navLinks.slice(3).map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                textDecoration: "none",
+                color: "#1A1A1A",
+                fontSize: "18px",
+                fontWeight: "400",
+                fontFamily: "'Cormorant Garamond', serif",
+              }}
+            >
+              {link.label}
+            </a>
+          ))}
           <a
             href={JOIN_LANDING_URL}
             target="_blank"
