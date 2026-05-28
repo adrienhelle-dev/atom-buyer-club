@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import type { Asset, AssetMonthlyPerformance } from '@/lib/types'
+import PerformanceChart from './PerformanceChart'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 const SEG_LABEL: Record<string, string>  = { atom: 'Atom', other: 'Other', monitoring: 'Monitoring' }
@@ -85,17 +86,29 @@ export default async function AssetsPage({
   const currentUser = token ? verifyToken(token) : null
   const canWrite = currentUser?.role !== 'viewer'
 
-  const [assetsRes, perfRes] = await Promise.all([
+  // 12-month cutoff for chart
+  const twelveMonthsAgo = new Date()
+  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12)
+  const chartCutoff = `${twelveMonthsAgo.getFullYear()}-${String(twelveMonthsAgo.getMonth() + 1).padStart(2, '0')}-01`
+
+  const [assetsRes, perfRes, chartRes] = await Promise.all([
     supabase.from('assets').select('*').neq('status', 'archived').order('segment').order('nickname'),
     supabase
       .from('asset_monthly_performance')
       .select('asset_id, month, gross_revenue, operating_profit, net_revenue_atom')
       .gte('month', `${new Date().getFullYear()}-01-01`)
       .order('month', { ascending: false }),
+    supabase
+      .from('asset_monthly_performance')
+      .select('asset_id, month, gross_revenue, operating_profit, net_revenue_atom, sci_net_revenue, occupancy_rate, adr, revpar')
+      .gte('month', chartCutoff)
+      .order('month', { ascending: true }),
   ])
 
-  const allAssets = (assetsRes.data ?? []) as Asset[]
-  const ytdPerfs  = (perfRes.data ?? []) as unknown as AssetMonthlyPerformance[]
+  const allAssets  = (assetsRes.data ?? []) as Asset[]
+  const ytdPerfs   = (perfRes.data ?? []) as unknown as AssetMonthlyPerformance[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const chartPerfs = (chartRes.data ?? []) as any[]
 
   // Filtered list for table
   let rows = allAssets
@@ -220,6 +233,17 @@ export default async function AssetsPage({
           )
         })}
       </div>
+
+      {/* ── Performance Chart ───────────────────────────────────── */}
+      <PerformanceChart
+        chartPerfs={chartPerfs}
+        assets={allAssets.map(a => ({
+          id: a.id,
+          nickname: a.nickname,
+          address: a.address,
+          segment: a.segment,
+        }))}
+      />
 
       {/* ── Filters ─────────────────────────────────────────────── */}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '12px' }}>
