@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { cookies } from 'next/headers'
+import { verifyToken } from '@/lib/auth'
 import { supabase } from '@/lib/supabase'
 import type { Asset, AssetMonthlyPerformance } from '@/lib/types'
 
@@ -77,6 +79,12 @@ export default async function AssetsPage({
 }) {
   const { segment, status } = await searchParams
 
+  // Role check for conditional UI
+  const cookieStore = await cookies()
+  const token = cookieStore.get('atom_admin_token')?.value
+  const currentUser = token ? verifyToken(token) : null
+  const canWrite = currentUser?.role !== 'viewer'
+
   const [assetsRes, perfRes] = await Promise.all([
     supabase.from('assets').select('*').neq('status', 'archived').order('segment').order('nickname'),
     supabase
@@ -114,13 +122,15 @@ export default async function AssetsPage({
             {allAssets.length} assets · YTD {yr}
           </p>
         </div>
-        <Link href="/admin/assets/new" style={{
-          background: '#B8975A', color: '#0f0e0c', borderRadius: '8px',
-          padding: '9px 16px', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
-          display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap', flexShrink: 0,
-        }}>
-          + Asset
-        </Link>
+        {canWrite && (
+          <Link href="/admin/assets/new" style={{
+            background: '#B8975A', color: '#0f0e0c', borderRadius: '8px',
+            padding: '9px 16px', fontSize: '13px', fontWeight: 600, textDecoration: 'none',
+            display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap', flexShrink: 0,
+          }}>
+            + Asset
+          </Link>
+        )}
       </div>
 
       {/* ── KPI strip ───────────────────────────────────────────── */}

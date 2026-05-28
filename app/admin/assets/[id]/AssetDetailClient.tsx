@@ -126,9 +126,10 @@ function SectionTitle({ children }: { children: string }) {
 interface Props {
   asset: Asset | null
   monthly: AssetMonthlyPerformance[]
+  canWrite?: boolean
 }
 
-export default function AssetDetailClient({ asset, monthly }: Props) {
+export default function AssetDetailClient({ asset, monthly, canWrite = true }: Props) {
   const router = useRouter()
   const now = new Date()
   const [currentMonth, setCurrentMonth] = useState(firstDayOfMonth(now))
@@ -242,10 +243,18 @@ export default function AssetDetailClient({ asset, monthly }: Props) {
       </div>
 
       {/* Main grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: canWrite ? '1fr 320px' : '1fr', gap: '24px', alignItems: 'start' }}>
 
-        {/* Left: Form */}
+        {/* Left: Form (write) or KPI-only banner (read-only) */}
         <div style={{ background: '#161512', border: '1px solid #2c2b27', borderRadius: '12px', padding: '24px' }}>
+        {!canWrite && (
+          <div style={{ padding: '10px 14px', background: 'rgba(184,151,90,.08)', border: '1px solid rgba(184,151,90,.2)', borderRadius: '8px', fontSize: '12px', color: '#B8975A', marginBottom: '20px' }}>
+            Accès consultation — la saisie des métriques est réservée aux gestionnaires
+          </div>
+        )}
+
+          {/* All inputs — disabled in read-only mode */}
+          <div style={{ pointerEvents: canWrite ? 'auto' : 'none', opacity: canWrite ? 1 : 0.6 }}>
 
           {/* Month selector */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #2c2b27' }}>
@@ -319,31 +328,34 @@ export default function AssetDetailClient({ asset, monthly }: Props) {
           />
 
           {/* Save button */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px' }}>
-            <button
-              onClick={save}
-              disabled={saveStatus === 'saving'}
-              style={{
-                background: saveStatus === 'saved' ? 'rgba(76,175,125,.15)' : '#B8975A',
-                color: saveStatus === 'saved' ? '#4caf7d' : '#0f0e0c',
-                border: saveStatus === 'saved' ? '1px solid #4caf7d' : 'none',
-                borderRadius: '8px', padding: '10px 20px', fontSize: '13px', fontWeight: 600,
-                cursor: saveStatus === 'saving' ? 'not-allowed' : 'pointer',
-              }}
-            >
-              {saveStatus === 'saving' ? 'Enregistrement…' : saveStatus === 'saved' ? '✓ Enregistré' : 'Enregistrer le mois'}
-            </button>
-            {dirtyFields.size > 0 && saveStatus === 'idle' && (
-              <span style={{ fontSize: '11px', color: '#7a7874' }}>Modifications non sauvegardées · Cmd+S</span>
-            )}
-            {saveStatus === 'error' && (
-              <span style={{ fontSize: '11px', color: '#d95e5e' }}>Erreur lors de la sauvegarde</span>
-            )}
-          </div>
+          {canWrite && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '16px' }}>
+              <button
+                onClick={save}
+                disabled={saveStatus === 'saving'}
+                style={{
+                  background: saveStatus === 'saved' ? 'rgba(76,175,125,.15)' : '#B8975A',
+                  color: saveStatus === 'saved' ? '#4caf7d' : '#0f0e0c',
+                  border: saveStatus === 'saved' ? '1px solid #4caf7d' : 'none',
+                  borderRadius: '8px', padding: '10px 20px', fontSize: '13px', fontWeight: 600,
+                  cursor: saveStatus === 'saving' ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {saveStatus === 'saving' ? 'Enregistrement…' : saveStatus === 'saved' ? '✓ Enregistré' : 'Enregistrer le mois'}
+              </button>
+              {dirtyFields.size > 0 && saveStatus === 'idle' && (
+                <span style={{ fontSize: '11px', color: '#7a7874' }}>Modifications non sauvegardées · Cmd+S</span>
+              )}
+              {saveStatus === 'error' && (
+                <span style={{ fontSize: '11px', color: '#d95e5e' }}>Erreur lors de la sauvegarde</span>
+              )}
+            </div>
+          )}
+          </div>{/* end read-only wrapper */}
         </div>
 
-        {/* Right: Real-time P&L */}
-        <div style={{ position: 'sticky', top: '76px' }}>
+        {/* Right: Real-time P&L (only for writers) */}
+        {canWrite && <div style={{ position: 'sticky', top: '76px' }}>
           <div style={{ background: '#161512', border: '1px solid #2c2b27', borderRadius: '12px', padding: '20px' }}>
             <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7a7874', marginBottom: '12px' }}>
               Calculs temps réel
@@ -371,7 +383,7 @@ export default function AssetDetailClient({ asset, monthly }: Props) {
               </>
             )}
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* Last 6 months table */}

@@ -25,7 +25,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const user = await getUser()
-  if (!user || user.role === 'property_manager') {
+  if (!user || user.role === 'viewer') {
     return NextResponse.json({ error: 'Non autorisé' }, { status: 401 })
   }
 
