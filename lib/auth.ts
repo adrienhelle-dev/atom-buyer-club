@@ -2,8 +2,11 @@ import jwt from 'jsonwebtoken'
 
 export type AdminRole = 'admin' | 'viewer' | 'projects' | 'property_manager'
 
+// Comptes internes — mot de passe lu depuis une variable d'env (passwordEnv),
+// jamais en clair dans le code. CONTACT_PASSWORD est partagé avec le CRM
+// (identifiants unifiés) : rotation en un seul endroit.
 const INTERNAL_ACCOUNTS = [
-  { email: 'contact@atom-capital.fr', password: 'NPMN5l6t1TpfhziV', role: 'projects' as AdminRole },
+  { email: 'contact@atom-capital.fr', passwordEnv: 'CONTACT_PASSWORD', role: 'projects' as AdminRole },
 ]
 
 export const ADMIN_EMAILS = [
@@ -22,11 +25,14 @@ export const PROJECTS_ONLY_EMAILS = [
   ...INTERNAL_ACCOUNTS.filter(a => a.role === 'projects').map(a => a.email),
 ]
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me'
+// Pas de fallback : si JWT_SECRET n'est pas défini, signToken/verifyToken
+// échouent (fail closed) plutôt que d'exposer une clé publique connue.
+const JWT_SECRET = process.env.JWT_SECRET as string
+if (!JWT_SECRET) console.error('[auth] JWT_SECRET manquant — auth désactivée tant que la variable n\'est pas posée.')
 
 export function getPasswordForEmail(email: string): string {
   const internal = INTERNAL_ACCOUNTS.find(a => a.email === email.toLowerCase())
-  if (internal) return internal.password
+  if (internal) return process.env[internal.passwordEnv] || ''
   try {
     const map = JSON.parse(process.env.ADMIN_PASSWORDS || '{}') as Record<string, string>
     return map[email.toLowerCase()] || (process.env.ADMIN_PASSWORD || '')
