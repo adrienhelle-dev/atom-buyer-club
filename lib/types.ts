@@ -26,6 +26,18 @@ export interface Asset {
   launch_date?: string
   photos?: string[]
   notes?: string
+  // Pont CRM : réalisation (showroom_item) dont cet asset est issu. Null si non lié.
+  showroom_item_id?: string | null
+}
+
+// Réalisation côté CRM (table showroom_items, base partagée) — version allégée
+// pour le sélecteur "Réalisation liée" de la fiche asset.
+export interface RealisationOption {
+  id: string
+  name: string
+  slug?: string
+  arrondissement?: string
+  statut_location?: string
 }
 
 export interface AssetMonthlyPerformance {

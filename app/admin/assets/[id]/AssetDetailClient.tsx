@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import type { Asset, AssetMonthlyPerformance } from '@/lib/types'
+import type { Asset, AssetMonthlyPerformance, RealisationOption } from '@/lib/types'
 import { computePnL } from '@/lib/types'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -117,6 +117,62 @@ function SectionTitle({ children }: { children: string }) {
   return (
     <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: '#7a7874', padding: '16px 0 8px' }}>
       {children}
+    </div>
+  )
+}
+
+// ── Réalisation liée (pont CRM) ─────────────────────────────────────────────────
+
+function LinkedRealisation({ asset }: { asset: Asset }) {
+  const [options, setOptions] = useState<RealisationOption[]>([])
+  const [value, setValue] = useState<string>(asset.showroom_item_id ?? '')
+  const [state, setState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  useEffect(() => {
+    let alive = true
+    fetch('/api/admin/realisations-list')
+      .then(r => (r.ok ? r.json() : []))
+      .then((d: RealisationOption[]) => { if (alive) setOptions(Array.isArray(d) ? d : []) })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [])
+
+  async function onChange(next: string) {
+    setValue(next)
+    setState('saving')
+    try {
+      const res = await fetch(`/api/admin/assets/${asset.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showroom_item_id: next || null }),
+      })
+      setState(res.ok ? 'saved' : 'error')
+    } catch {
+      setState('error')
+    }
+  }
+
+  return (
+    <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+      <span style={{ fontSize: '12px', color: '#7a7874' }}>Réalisation liée</span>
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          background: '#1e1d1a', border: '1px solid #2c2b27', borderRadius: '6px',
+          padding: '6px 10px', fontSize: '13px', color: '#F5F2ED', outline: 'none', minWidth: '220px',
+        }}
+      >
+        <option value="">— Aucune —</option>
+        {options.map(o => (
+          <option key={o.id} value={o.id}>
+            {o.name}{o.arrondissement ? ` · ${o.arrondissement}` : ''}
+          </option>
+        ))}
+      </select>
+      {state === 'saving' && <span style={{ fontSize: '11px', color: '#7a7874' }}>…</span>}
+      {state === 'saved' && <span style={{ fontSize: '11px', color: '#4caf7d' }}>✓ Lié</span>}
+      {state === 'error' && <span style={{ fontSize: '11px', color: '#d95e5e' }}>Erreur</span>}
     </div>
   )
 }
@@ -238,6 +294,7 @@ export default function AssetDetailClient({ asset, monthly, canWrite = true }: P
                 <span>· Bail {new Date(asset.date_lease_start).toLocaleDateString('fr-FR', { month: '2-digit', year: 'numeric' })} → {new Date(asset.date_lease_end).toLocaleDateString('fr-FR', { month: '2-digit', year: 'numeric' })}</span>
               )}
             </div>
+            {canWrite && <LinkedRealisation asset={asset} />}
           </div>
         )}
       </div>
