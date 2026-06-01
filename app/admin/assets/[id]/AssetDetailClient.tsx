@@ -121,6 +121,77 @@ function SectionTitle({ children }: { children: string }) {
   )
 }
 
+// ── Segment + Statut de l'asset ─────────────────────────────────────────────────
+
+const SEGMENT_OPTS: { value: Asset['segment']; label: string }[] = [
+  { value: 'atom', label: 'Atom (géré)' },
+  { value: 'other', label: 'Autre' },
+  { value: 'monitoring', label: 'Monitoring' },
+]
+const STATUS_OPTS: { value: Asset['status']; label: string }[] = [
+  { value: 'active', label: 'Actif' },
+  { value: 'onboarding', label: 'Onboarding' },
+  { value: 'paused', label: 'En pause' },
+  { value: 'archived', label: 'Archivé' },
+]
+
+function AssetSettings({ asset }: { asset: Asset }) {
+  const router = useRouter()
+  const [segment, setSegment] = useState<Asset['segment']>(asset.segment)
+  const [status, setStatus] = useState<Asset['status']>(asset.status)
+  const [state, setState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  async function patch(fields: Partial<Pick<Asset, 'segment' | 'status'>>) {
+    setState('saving')
+    try {
+      const res = await fetch(`/api/admin/assets/${asset.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fields),
+      })
+      if (res.ok) {
+        setState('saved')
+        router.refresh() // re-fetch l'asset → le P&L se recalcule selon le segment
+      } else {
+        setState('error')
+      }
+    } catch {
+      setState('error')
+    }
+  }
+
+  const selStyle = {
+    background: '#1e1d1a', border: '1px solid #2c2b27', borderRadius: '6px',
+    padding: '6px 10px', fontSize: '13px', color: '#F5F2ED', outline: 'none',
+  } as const
+
+  return (
+    <div style={{ marginTop: '14px', display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+      <span style={{ fontSize: '12px', color: '#7a7874' }}>Segment</span>
+      <select
+        value={segment}
+        onChange={e => { const v = e.target.value as Asset['segment']; setSegment(v); patch({ segment: v }) }}
+        style={selStyle}
+      >
+        {SEGMENT_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+
+      <span style={{ fontSize: '12px', color: '#7a7874', marginLeft: '6px' }}>Statut</span>
+      <select
+        value={status}
+        onChange={e => { const v = e.target.value as Asset['status']; setStatus(v); patch({ status: v }) }}
+        style={selStyle}
+      >
+        {STATUS_OPTS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+
+      {state === 'saving' && <span style={{ fontSize: '11px', color: '#7a7874' }}>…</span>}
+      {state === 'saved' && <span style={{ fontSize: '11px', color: '#4caf7d' }}>✓ Enregistré</span>}
+      {state === 'error' && <span style={{ fontSize: '11px', color: '#d95e5e' }}>Erreur</span>}
+    </div>
+  )
+}
+
 // ── Réalisation liée (pont CRM) ─────────────────────────────────────────────────
 
 function LinkedRealisation({ asset }: { asset: Asset }) {
@@ -294,6 +365,7 @@ export default function AssetDetailClient({ asset, monthly, canWrite = true }: P
                 <span>· Bail {new Date(asset.date_lease_start).toLocaleDateString('fr-FR', { month: '2-digit', year: 'numeric' })} → {new Date(asset.date_lease_end).toLocaleDateString('fr-FR', { month: '2-digit', year: 'numeric' })}</span>
               )}
             </div>
+            {canWrite && <AssetSettings asset={asset} />}
             {canWrite && <LinkedRealisation asset={asset} />}
           </div>
         )}
