@@ -6,20 +6,12 @@ import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
 
 const featuredProjects = [
   {
-    name: "Demours",
-    location: "Paris 17e",
+    name: "Tiquetonne",
+    location: "Paris 2e",
     surface: "12 m²",
     rendement: "6,6%",
     loyer: "870 €/mois",
     photo: "/realisations/realisation-02.jpg",
-  },
-  {
-    name: "Commerce",
-    location: "Paris 15e",
-    surface: "10 m² Carrez",
-    rendement: "6,3%",
-    loyer: "890 €/mois",
-    photo: "/realisations/realisation-05.jpg",
   },
   {
     name: "Saint-Antoine",
@@ -27,6 +19,14 @@ const featuredProjects = [
     surface: "9,7 m² Carrez",
     rendement: "6,0%",
     loyer: "725 €/mois",
+    photo: "/realisations/realisation-05.jpg",
+  },
+  {
+    name: "Ziem",
+    location: "Paris 18e",
+    surface: "10 m² Carrez",
+    rendement: "6,3%",
+    loyer: "890 €/mois",
     photo: "/realisations/realisation-08.jpg",
   },
 ];
