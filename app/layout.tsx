@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Cormorant_Garamond, DM_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -72,6 +73,7 @@ export default function RootLayout({
         }}
       >
         {children}
+        <Script src="/meta-pixel.js" strategy="afterInteractive" />
       </body>
     </html>
   );
