@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Cormorant_Garamond, DM_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -29,6 +31,7 @@ const memberCount = process.env.NEXT_PUBLIC_MEMBER_COUNT ?? "713";
 const siteDescription = `Club privé · ${memberCount}+ investisseurs · Micro-logements parisiens clé-en-main — sourcing, rénovation premium et loyer garanti en bail société.`;
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.atombuyersclub.fr"),
   title: "Atom Buyers Club — Investissement micro-logement parisien",
   description: siteDescription,
   keywords: [
@@ -39,11 +42,14 @@ export const metadata: Metadata = {
     "bail société",
     "atom buyers club",
   ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "Atom Buyers Club — Micro-logement parisien clé-en-main",
     description: siteDescription,
     type: "website",
-    url: "https://atombuyerclub.fr",
+    url: "https://www.atombuyersclub.fr",
     locale: "fr_FR",
     siteName: "Atom Buyers Club",
   },
@@ -74,6 +80,8 @@ export default function RootLayout({
       >
         {children}
         <Script src="/meta-pixel.js" strategy="afterInteractive" />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

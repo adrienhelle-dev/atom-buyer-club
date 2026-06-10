@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
+import { trackLead, trackViewContent } from "@/lib/track";
 
 const featuredProjects = [
   {
@@ -106,11 +108,13 @@ export default function Realisations() {
             >
               {/* Photo with overlay */}
               <div style={{ position: "relative", height: "clamp(260px, 32vw, 400px)", overflow: "hidden" }}>
-                <img
+                <Image
                   src={proj.photo}
                   alt={`${proj.name} — ${proj.location}`}
+                  fill
+                  sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
                   className="real-photo"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.7s ease" }}
+                  style={{ objectFit: "cover", transition: "transform 0.7s ease" }}
                 />
                 {/* Gradient overlay */}
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.9) 100%)" }} />
@@ -153,6 +157,7 @@ export default function Realisations() {
                 href={JOIN_LANDING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackLead(`realisations_${proj.name.toLowerCase()}`)}
                 className="real-cta"
                 style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px 20px", background: "rgba(255,255,255,0.025)", borderTop: "1px solid rgba(245,242,237,0.06)", textDecoration: "none", transition: "background 0.25s" }}
               >
@@ -179,6 +184,7 @@ export default function Realisations() {
             href={SHOWROOM_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackViewContent("realisations_showroom")}
             style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "14px 36px", background: "transparent", color: "rgba(245,242,237,0.6)", border: "1px solid rgba(245,242,237,0.15)", borderRadius: "2px", textDecoration: "none", fontSize: "13px", fontWeight: 400, letterSpacing: "0.08em", fontFamily: "'DM Sans', sans-serif", transition: "border-color 0.2s, color 0.2s" }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.4)"; e.currentTarget.style.color = "#F5F2ED"; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.15)"; e.currentTarget.style.color = "rgba(245,242,237,0.6)"; }}

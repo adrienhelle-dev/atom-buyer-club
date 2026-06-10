@@ -5,6 +5,7 @@ import Link from "next/link";
 import Logo from "./Logo";
 import { useLanguage } from "@/context/LanguageContext";
 import { JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
+import { trackLead, trackViewContent } from "@/lib/track";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -146,6 +147,7 @@ export default function Navbar() {
             href={JOIN_LANDING_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackLead("navbar")}
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -263,7 +265,7 @@ export default function Navbar() {
             href={SHOWROOM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => setMenuOpen(false)}
+            onClick={() => { trackViewContent("menu_realisations"); setMenuOpen(false); }}
             style={{
               textDecoration: "none",
               color: "#1A1A1A",
@@ -294,6 +296,7 @@ export default function Navbar() {
             href={JOIN_LANDING_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackLead("navbar_mobile")}
             style={{
               display: "inline-block",
               padding: "12px 24px",

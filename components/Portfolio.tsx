@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { JOIN_LANDING_URL, SHOWROOM_URL, PROJECTS_URL } from "@/lib/config";
+import { trackLead, trackViewContent } from "@/lib/track";
 
 const projects = [
   // ── Disponible ──────────────────────────────────────────────────────────────
@@ -318,6 +319,7 @@ export default function Portfolio() {
               href={SHOWROOM_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackViewContent("portfolio_showroom")}
               style={{ display: "inline-flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "#5C6BC0", fontFamily: "'DM Sans', sans-serif", textDecoration: "none", letterSpacing: "0.03em", transition: "gap 0.2s" }}
               onMouseEnter={(e) => (e.currentTarget.style.gap = "10px")}
               onMouseLeave={(e) => (e.currentTarget.style.gap = "6px")}
@@ -383,6 +385,7 @@ export default function Portfolio() {
                 href={JOIN_LANDING_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackLead("portfolio_coming_soon")}
                 className="portfolio-card"
                 style={{
                   flexShrink: 0,
@@ -473,6 +476,7 @@ export default function Portfolio() {
                   href={JOIN_LANDING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackLead("portfolio_dispo")}
                   style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", margin: "0 28px 28px", padding: "13px", background: "#5C6BC0", color: "#F5F2ED", textDecoration: "none", borderRadius: "2px", fontSize: "13px", fontWeight: 500, letterSpacing: "0.05em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#4a5ab8")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "#5C6BC0")}
@@ -485,6 +489,7 @@ export default function Portfolio() {
                   href={JOIN_LANDING_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackLead("portfolio_vendu")}
                   style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", padding: "14px 28px 20px", borderTop: "1px solid rgba(245,242,237,0.08)", color: "#B8975A", textDecoration: "none", fontSize: "12px", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.07em", fontWeight: 400, transition: "color 0.2s, background 0.2s" }}
                   onMouseEnter={(e) => { e.currentTarget.style.color = "#F5F2ED"; e.currentTarget.style.background = "rgba(245,242,237,0.04)"; }}
                   onMouseLeave={(e) => { e.currentTarget.style.color = "#B8975A"; e.currentTarget.style.background = "transparent"; }}

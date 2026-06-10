@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -216,14 +217,16 @@ export default function PhotoCarousel() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.6, ease: "easeInOut" }}
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    backgroundImage: `url(${photos[current]})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                />
+                  style={{ position: "absolute", inset: 0 }}
+                >
+                  <Image
+                    src={photos[current]}
+                    alt={labelFromPath(photos[current])}
+                    fill
+                    sizes="100vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </motion.div>
               </AnimatePresence>
 
               {/* Dark gradient overlay bottom */}

@@ -1,5 +1,6 @@
 "use client";
 import { MEMBER_COUNT, WA_GROUP_URL, JOIN_LANDING_URL } from "@/lib/config";
+import { trackLead, trackContact } from "@/lib/track";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -52,6 +53,7 @@ export default function JoinClub() {
               href={JOIN_LANDING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackLead("join_section")}
               style={{ display: "inline-flex", alignItems: "center", gap: "10px", padding: "18px 40px", background: "#5C6BC0", color: "#FFFFFF", borderRadius: "2px", textDecoration: "none", fontSize: "15px", fontWeight: 500, letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s, transform 0.2s" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#4a5ab8"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "#5C6BC0"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -67,6 +69,7 @@ export default function JoinClub() {
               href={WA_GROUP_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackContact("join_whatsapp")}
               style={{ display: "inline-flex", alignItems: "center", gap: "10px", padding: "18px 40px", background: "transparent", color: "rgba(245,242,237,0.8)", border: "1px solid rgba(245,242,237,0.25)", borderRadius: "2px", textDecoration: "none", fontSize: "15px", fontWeight: 400, letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "border-color 0.2s, color 0.2s, transform 0.2s" }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.6)"; e.currentTarget.style.color = "#F5F2ED"; e.currentTarget.style.transform = "translateY(-2px)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.25)"; e.currentTarget.style.color = "rgba(245,242,237,0.8)"; e.currentTarget.style.transform = "translateY(0)"; }}

@@ -14,6 +14,8 @@
   var ATOM_META_PIXEL_ID = '1312077793799886';
 
   window.atomTrackLead = function () {};
+  window.atomTrackContact = function () {};
+  window.atomTrackViewContent = function () {};
 
   if (!ATOM_META_PIXEL_ID) return;
 
@@ -31,5 +33,11 @@
 
   window.atomTrackLead = function (params) {
     try { fbq('track', 'Lead', params || {}); } catch (e) {}
+  };
+  window.atomTrackContact = function (params) {
+    try { fbq('track', 'Contact', params || {}); } catch (e) {}
+  };
+  window.atomTrackViewContent = function (params) {
+    try { fbq('track', 'ViewContent', params || {}); } catch (e) {}
   };
 })();

@@ -12,9 +12,11 @@ import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import JoinClub from "@/components/JoinClub";
 import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
 export default function Home() {
   return (
     <ClientWrapper>
+      <JsonLd />
       <main>
         <Navbar />
         <Hero />

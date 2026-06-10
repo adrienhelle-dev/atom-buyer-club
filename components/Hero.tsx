@@ -1,5 +1,6 @@
 "use client";
 import { MEMBER_COUNT, JOIN_LANDING_URL, SHOWROOM_URL } from "@/lib/config";
+import { trackLead, trackViewContent } from "@/lib/track";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
@@ -89,6 +90,7 @@ export default function Hero() {
               href={JOIN_LANDING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackLead("hero")}
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "16px 32px", background: "#5C6BC0", color: "#FFFFFF", borderRadius: "2px", textDecoration: "none", fontSize: "14px", fontWeight: "500", letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s, transform 0.2s" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#4a5ab8"; e.currentTarget.style.transform = "translateY(-1px)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "#5C6BC0"; e.currentTarget.style.transform = "translateY(0)"; }}
@@ -100,6 +102,7 @@ export default function Hero() {
               href={SHOWROOM_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackViewContent("hero_realisations")}
               style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "16px 32px", background: "transparent", color: "#F5F2ED", border: "1px solid rgba(245,242,237,0.3)", borderRadius: "2px", textDecoration: "none", fontSize: "14px", fontWeight: "400", letterSpacing: "0.04em", fontFamily: "'DM Sans', sans-serif", transition: "border-color 0.2s, background 0.2s" }}
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.7)"; e.currentTarget.style.background = "rgba(245,242,237,0.05)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(245,242,237,0.3)"; e.currentTarget.style.background = "transparent"; }}
