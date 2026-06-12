@@ -180,22 +180,33 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <div style={{ display: "none" }} className="show-mobile">
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            {/* Mobile lang toggle */}
-            <div style={{ display: "flex", gap: "2px" }}>
+            {/* Mobile lang toggle — même pastille que le desktop */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "2px",
+                border: `1px solid ${scrolled ? "rgba(26,26,26,0.15)" : "rgba(245,242,237,0.2)"}`,
+                borderRadius: "100px",
+                padding: "3px",
+              }}
+            >
               {(["fr", "en"] as const).map((l) => (
                 <button
                   key={l}
                   onClick={() => setLang(l)}
                   style={{
-                    padding: "4px 8px",
+                    padding: "4px 10px",
+                    borderRadius: "100px",
                     border: "none",
                     cursor: "pointer",
                     fontSize: "11px",
                     letterSpacing: "0.06em",
                     fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: lang === l ? 600 : 400,
-                    background: "transparent",
-                    color: lang === l ? linkColor : `${linkColor}80`,
+                    fontWeight: lang === l ? 500 : 400,
+                    background: lang === l ? (scrolled ? "#1A1A1A" : "rgba(245,242,237,0.2)") : "transparent",
+                    color: lang === l ? "#F5F2ED" : linkColor,
+                    transition: "all 0.2s",
                     textTransform: "uppercase",
                   }}
                 >
@@ -203,6 +214,27 @@ export default function Navbar() {
                 </button>
               ))}
             </div>
+            {/* Instagram icon */}
+            <a
+              href="https://www.instagram.com/atom.living?igsh=MXh4aWtudno0NW43MA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram @atom.living"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: linkColor,
+                opacity: 0.55,
+                transition: "color 0.3s",
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               style={{
