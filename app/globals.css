@@ -30,6 +30,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Les ancres (#services, #faq…) s'arrêtent sous la navbar fixe de 72px */
+  scroll-padding-top: 88px;
 }
 
 body {
