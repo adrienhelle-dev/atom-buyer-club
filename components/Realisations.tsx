@@ -12,7 +12,6 @@ const featuredProjects = [
     location: "Paris 2e · Sentier",
     surface: "14 m²",
     rendement: "5,7%",
-    loyer: "900 €/mois",
     photo: "/realisations/realisation-02.jpg",
   },
   {
@@ -20,7 +19,6 @@ const featuredProjects = [
     location: "Paris 4e · Marais",
     surface: "13 m²",
     rendement: "5,8%",
-    loyer: "850 €/mois",
     photo: "/realisations/realisation-05.jpg",
   },
   {
@@ -28,7 +26,6 @@ const featuredProjects = [
     location: "Paris 18e · Montmartre",
     surface: "13 m²",
     rendement: "5,8%",
-    loyer: "800 €/mois",
     photo: "/realisations/realisation-08.jpg",
   },
 ];
@@ -137,15 +134,6 @@ export default function Realisations() {
                       </div>
                       <div style={{ fontSize: "9px", color: "rgba(245,242,237,0.35)", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.12em", marginTop: "4px" }}>
                         {isFr ? "RENDEMENT" : "YIELD"}
-                      </div>
-                    </div>
-                    <div style={{ width: "1px", height: "34px", background: "rgba(245,242,237,0.15)", flexShrink: 0 }} />
-                    <div>
-                      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px, 2.6vw, 30px)", color: "#F5F2ED", fontWeight: 300, lineHeight: 1 }}>
-                        {proj.loyer}
-                      </div>
-                      <div style={{ fontSize: "9px", color: "rgba(245,242,237,0.35)", fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.12em", marginTop: "4px" }}>
-                        {isFr ? "LOYER GARANTI" : "GUARANTEED RENT"}
                       </div>
                     </div>
                   </div>
